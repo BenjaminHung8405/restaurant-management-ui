@@ -2,84 +2,82 @@
 
 import { forwardRef, useId } from "react";
 
+// ── Props ─────────────────────────────────────────────────────────────────────
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  /** Visible label rendered above the input */
+  label?:           string;
+  /** Validation error — shown in red below the input, takes priority over helperText */
+  error?:           string;
+  /** Hint text shown below the input when there is no error */
+  helperText?:      string;
+  /** Extra Tailwind classes applied to the outer wrapper div */
+  wrapperClassName?: string;
+}
+
 /**
- * Input — forwardRef-compatible for react-hook-form integration.
+ * Input — forwardRef-compatible for full react-hook-form / Zod integration.
  *
- * @param {string}                   label
- * @param {string}                   error        - Validation error message
- * @param {string}                   helperText   - Hint shown below input when no error
- * @param {string}                   className    - Extra classes for the <input> element
- * @param {string}                   wrapperClassName
- * @param {React.InputHTMLAttributes} ...props    - Spread onto <input>
+ * @param label           - Accessible visible label
+ * @param error           - Validation error string
+ * @param helperText      - Non-error hint beneath the input
+ * @param wrapperClassName - Classes on the container div
+ *
+ * All standard <input> HTML attributes are forwarded via rest spread.
  */
-const Input = forwardRef(function Input(
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   {
     label,
     error,
     helperText,
-    className = "",
+    className        = "",
     wrapperClassName = "",
-    id: externalId,
+    id:   externalId,
     required,
     disabled,
     ...props
   },
   ref
 ) {
-  // Stable generated id so label and input are always linked
+  // Stable generated id — links <label> ↔ <input> ↔ error/helper text
   const generatedId = useId();
-  const inputId = externalId ?? generatedId;
-  const errorId = `${inputId}-error`;
-  const helperId = `${inputId}-helper`;
+  const inputId     = externalId ?? generatedId;
+  const errorId     = `${inputId}-error`;
+  const helperId    = `${inputId}-helper`;
 
   // ── Class composition ──────────────────────────────────────────────────────
   const baseInput = [
     "w-full",
-    "px-4 py-3",                              // spec: 12px 16px
-    "text-base text-blue-950",
+    "px-4 py-3",
+    "text-base text-neutral-900",
     "bg-white",
     "border rounded-lg",
-    // Transition — MASTER.md: 200ms ease
     "transition-all duration-200 ease-in-out",
-    // Placeholder
-    "placeholder:text-slate-400",
-    // Cursor
+    "placeholder:text-neutral-400",
     "cursor-text",
   ].join(" ");
 
-  const normalBorder =
-    "border-slate-200 hover:border-blue-300";
-
-  // Focus: MASTER.md primary #1E40AF — focus states must be visible
-  const focusRing =
-    "focus:outline-none focus:border-blue-800 focus:ring-1 focus:ring-blue-800";
-
-  // Error state — red border + ring
-  const errorBorder =
-    "border-red-400 hover:border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-400";
-
-  // Disabled
-  const disabledClasses = disabled
-    ? "opacity-50 cursor-not-allowed bg-slate-50"
-    : "";
+  const normalBorder = "border-neutral-200 hover:border-primary-300";
+  const focusRing    = "focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500";
+  const errorBorder  = "border-red-400 hover:border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-400 focus:outline-none";
+  const disabledCls  = disabled ? "opacity-50 cursor-not-allowed bg-neutral-50" : "";
 
   const inputClasses = [
     baseInput,
     error ? errorBorder : normalBorder,
     !error ? focusRing : "",
-    disabledClasses,
+    disabledCls,
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
   return (
-    <div className={`flex flex-col gap-1.5 ${wrapperClassName}`}>
+    <div className={`flex flex-col gap-1.5 ${wrapperClassName}`.trim()}>
       {/* Label */}
       {label && (
         <label
           htmlFor={inputId}
-          className="text-sm font-medium text-blue-950 cursor-pointer select-none"
+          className="text-sm font-medium text-neutral-800 cursor-pointer select-none"
         >
           {label}
           {required && (
@@ -111,7 +109,7 @@ const Input = forwardRef(function Input(
           role="alert"
           className="flex items-center gap-1 text-sm text-red-600 font-medium"
         >
-          {/* Inline SVG exclamation — MASTER.md: no emojis, use SVG icons */}
+          {/* Inline SVG — MASTER.md: no emoji, use SVG icons */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -128,7 +126,7 @@ const Input = forwardRef(function Input(
           {error}
         </p>
       ) : helperText ? (
-        <p id={helperId} className="text-sm text-slate-500">
+        <p id={helperId} className="text-sm text-neutral-500">
           {helperText}
         </p>
       ) : null}

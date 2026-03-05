@@ -5,37 +5,51 @@ import { useCallback, useEffect } from "react";
 
 // ── Max-width map ─────────────────────────────────────────────────────────────
 const maxWidthMap = {
-  xs: "max-w-xs",
-  sm: "max-w-sm",
-  md: "max-w-md",   // MASTER.md spec: max-width 500px ≈ max-w-lg
-  lg: "max-w-lg",
-  xl: "max-w-xl",
+  xs:  "max-w-xs",
+  sm:  "max-w-sm",
+  md:  "max-w-md",
+  lg:  "max-w-lg",
+  xl:  "max-w-xl",
   "2xl": "max-w-2xl",
-};
+} as const;
+
+type ModalMaxWidth = keyof typeof maxWidthMap;
+
+// ── Props ─────────────────────────────────────────────────────────────────────
+interface ModalProps {
+  isOpen:           boolean;
+  onClose:          () => void;
+  title?:           string;
+  children:         React.ReactNode;
+  maxWidth?:        ModalMaxWidth;
+  /** Allow clicking the backdrop to close (default: true) */
+  closeOnBackdrop?: boolean;
+  className?:       string;
+}
 
 /**
- * Modal
+ * Modal — accessible dialog with backdrop blur, keyboard (Escape) dismissal,
+ * body-scroll lock, and a visible focus-ring close button.
  *
- * @param {boolean}          isOpen
- * @param {() => void}       onClose
- * @param {string}           title
- * @param {React.ReactNode}  children
- * @param {"xs"|"sm"|"md"|"lg"|"xl"|"2xl"} maxWidth
- * @param {boolean}          closeOnBackdrop  - default true
+ * @param isOpen           - Controlled open state
+ * @param onClose          - Called when the user dismisses the modal
+ * @param title            - Optional heading (sets aria-labelledby)
+ * @param maxWidth         - xs | sm | md | lg | xl | 2xl  (default: "md")
+ * @param closeOnBackdrop  - Click-outside to close  (default: true)
  */
 export default function Modal({
   isOpen,
   onClose,
   title,
   children,
-  maxWidth = "md",
+  maxWidth        = "md",
   closeOnBackdrop = true,
-  className = "",
-}) {
+  className       = "",
+}: ModalProps) {
   // ── Keyboard: Escape to close ──────────────────────────────────────────────
   const handleKeyDown = useCallback(
-    (e) => {
-      if (e.key === "Escape") onClose?.();
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
     },
     [onClose]
   );
@@ -59,10 +73,8 @@ export default function Modal({
   const widthClass = maxWidthMap[maxWidth] ?? maxWidthMap.md;
 
   // ── Backdrop click ─────────────────────────────────────────────────────────
-  const handleBackdropClick = (e) => {
-    if (closeOnBackdrop && e.target === e.currentTarget) {
-      onClose?.();
-    }
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (closeOnBackdrop && e.target === e.currentTarget) onClose();
   };
 
   return (
@@ -71,14 +83,14 @@ export default function Modal({
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? "modal-title" : undefined}
-      // MASTER.md: backdrop blur(4px) + rgba(0,0,0,0.5)
       className={[
         "fixed inset-0 z-[1050]",
         "flex items-center justify-center",
+        // MASTER.md: backdrop blur(4px) + rgba(0,0,0,0.5)
         "bg-black/50 backdrop-blur-[4px]",
-        // Transition — MASTER.md: 200ms, no instant state changes
         "transition-opacity duration-200 ease-in-out",
-        "p-4",                                // prevent card touching screen edges on mobile
+        // Prevent card touching screen edges on mobile
+        "p-4",
       ].join(" ")}
       onClick={handleBackdropClick}
     >
@@ -87,15 +99,13 @@ export default function Modal({
         className={[
           "relative w-full",
           widthClass,
-          // MASTER.md .modal spec: bg white, rounded-16px, p-32px, shadow-xl
+          // MASTER.md: bg white, rounded-16px, p-32px, shadow-xl
           "bg-white rounded-2xl p-8",
-          // MASTER.md shadow-xl: 0 20px 25px rgba(0,0,0,0.15)
           "shadow-[0_20px_25px_rgba(0,0,0,0.15)]",
-          // Slide-in feel without layout shift
           "transition-all duration-200 ease-in-out",
           className,
         ].join(" ")}
-        // Stop click from reaching backdrop
+        // Stop click reaching backdrop
         onClick={(e) => e.stopPropagation()}
       >
         {/* ── Header ── */}
@@ -103,7 +113,7 @@ export default function Modal({
           {title && (
             <h2
               id="modal-title"
-              className="text-xl font-semibold text-blue-950 leading-snug font-[Fira_Code,monospace]"
+              className="text-xl font-semibold text-neutral-900 leading-snug font-display"
             >
               {title}
             </h2>
@@ -113,17 +123,16 @@ export default function Modal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Đóng hộp thoại"
             className={[
               "flex-shrink-0 ml-auto",
               "p-1.5 rounded-lg",
-              "text-slate-400 hover:text-slate-700",
-              "hover:bg-slate-100",
+              "text-neutral-400 hover:text-neutral-700",
+              "hover:bg-neutral-100",
               "transition-colors duration-200 ease-in-out",
               "cursor-pointer",
-              // Focus ring — MASTER.md: must be visible
               "focus-visible:outline-none focus-visible:ring-2",
-              "focus-visible:ring-blue-800 focus-visible:ring-offset-2",
+              "focus-visible:ring-primary-400 focus-visible:ring-offset-2",
             ].join(" ")}
           >
             <X size={20} strokeWidth={2} aria-hidden="true" />
@@ -131,7 +140,7 @@ export default function Modal({
         </div>
 
         {/* ── Body ── */}
-        <div className="text-slate-700 text-base leading-relaxed">
+        <div className="text-neutral-700 text-base leading-relaxed">
           {children}
         </div>
       </div>

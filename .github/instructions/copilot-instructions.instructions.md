@@ -7,7 +7,7 @@ This project is a Restaurant Management System (RMS) containing two distinct dom
 
 - Framework: Next.js 14+ (App Router)
 - Styling: Tailwind CSS
-- Language: JavaScript (ES6+) / JSX
+- Language: TypeScript / TSX. Always define strict interfaces/types for component props and state. Avoid using 'any'.
 - API Client: Axios
 - Form Handling: React Hook Form + Zod (for validation)
 - Global State: Zustand
