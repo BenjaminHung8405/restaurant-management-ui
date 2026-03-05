@@ -1,6 +1,6 @@
 import Button from "@/components/common/Button";
-import { ChefHat, Leaf, Star, Utensils } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ChefHat, Leaf, Star, Utensils } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
