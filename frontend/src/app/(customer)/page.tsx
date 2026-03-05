@@ -97,13 +97,8 @@ function FeatureCard({ item }: { item: FeatureItem }) {
     >
       {/* Icon ring */}
       <div
-        className={[
-          "mb-5 flex items-center justify-center",
-          "w-14 h-14 rounded-2xl",
-          "bg-primary-50 text-primary-500",
-          "group-hover:bg-primary-100",
-          "transition-colors duration-[250ms]",
-        ].join(" ")}
+        className="mb-5 flex items-center justify-center w-14 h-14 rounded-2xl transition-colors duration-[250ms] group-hover:[background-color:#fed7aa]"
+        style={{ backgroundColor: "#ffedd5", color: "#c2410c" }}
         aria-hidden="true"
       >
         <Icon size={26} strokeWidth={1.75} />
@@ -170,16 +165,16 @@ function DishCard({ dish }: { dish: DishPreview }) {
 
         {/* Price + CTA row */}
         <div className="flex items-center justify-between pt-3 mt-auto border-t border-neutral-100">
-          <span className="text-base font-bold text-primary-500">{price}</span>
+          <span
+            className="text-base font-bold"
+            style={{ color: "#f97316" }}
+          >
+            {price}
+          </span>
           <Link
             href="/menu"
-            className={[
-              "text-sm font-medium text-primary-600",
-              "hover:text-primary-700",
-              "transition-colors duration-150",
-              "focus-visible:outline-none focus-visible:ring-2",
-              "focus-visible:ring-primary-400 focus-visible:ring-offset-2 rounded-sm",
-            ].join(" ")}
+            className="text-sm font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm"
+            style={{ color: "#9a3412" }}
             aria-label={`Xem chi tiết ${name}`}
           >
             Xem thêm →
@@ -232,14 +227,14 @@ export default function CustomerHomePage() {
 
           {/* Eyebrow label */}
           <span
-            className={[
-              "inline-flex items-center gap-1.5",
-              "px-4 py-1.5 rounded-full",
-              "bg-primary-50 text-primary-600",
-              "text-sm font-semibold border border-primary-100",
-            ].join(" ")}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold"
+            style={{
+              backgroundColor: "#fff7ed",
+              color: "#c2410c",
+              border: "1.5px solid #fed7aa",
+            }}
           >
-            <Star size={13} strokeWidth={2.5} aria-hidden="true" className="fill-primary-400 text-primary-400" />
+            <Star size={13} strokeWidth={2.5} aria-hidden="true" style={{ fill: "#f97316", color: "#f97316" }} />
             Nhà hàng số 1 Long Xuyên
           </span>
 
@@ -256,7 +251,7 @@ export default function CustomerHomePage() {
             <span className="gradient-text">Đích Thực</span>
             {", "}
             Trải Nghiệm{" "}
-            <span className="text-primary-500">Tuyệt Vời</span>
+            <span style={{ color: "#7c2d12" }}>Tuyệt Vời</span>
           </h1>
 
           {/* Sub-description — customer.md: short, focused */}
@@ -317,14 +312,14 @@ export default function CustomerHomePage() {
 
       {/* ══ 2. FEATURES / HIGHLIGHTS ═══════════════════════════════════════ */}
       <section
-        className="py-20 px-4 sm:px-8 bg-surface-muted"
+        className="py-20 px-4 sm:px-8 bg-neutral-50"
         aria-labelledby="features-heading"
       >
         <div className="max-w-[1280px] mx-auto flex flex-col items-center gap-12">
 
           {/* Section header */}
           <div className="text-center max-w-[520px]">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary-500 mb-2">
+            <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#b45309" }}>
               Tại sao chọn chúng tôi?
             </p>
             <h2
@@ -353,7 +348,7 @@ export default function CustomerHomePage() {
 
           {/* Section header */}
           <div className="text-center max-w-[520px]">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary-500 mb-2">
+            <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#b45309" }}>
               Thực đơn nổi bật
             </p>
             <h2
@@ -386,12 +381,10 @@ export default function CustomerHomePage() {
 
       {/* ══ 4. CTA BANNER ═════════════════════════════════════════════════ */}
       <section
-        className={[
-          "relative overflow-hidden",
-          "py-20 px-4 sm:px-8",
-          // Warm on-brand gradient
-          "bg-gradient-to-r from-primary-500 to-primary-600",
-        ].join(" ")}
+        className="relative overflow-hidden py-20 px-4 sm:px-8"
+        style={{
+          background: "linear-gradient(135deg, #7c2d12 0%, #9a3412 50%, #7c2d12 100%)",
+        }}
         aria-labelledby="cta-heading"
         id="reservation"
       >
@@ -416,12 +409,12 @@ export default function CustomerHomePage() {
             ].join(" ")}
           >
             Sẵn sàng cho một bữa tối{" "}
-            <span className="text-secondary-200">khó quên?</span>
+            <span className="text-amber-300 drop-shadow-sm">khó quên?</span>
           </h2>
 
-          <p className="max-w-[480px] text-base sm:text-lg text-white/80 leading-[1.7]">
+          <p className="max-w-[480px] text-base sm:text-lg text-white/90 leading-[1.7]">
             Đặt bàn ngay hôm nay và nhận ưu đãi{" "}
-            <span className="font-semibold text-white">
+            <span className="font-semibold text-amber-300">
               giảm 15% cho lần đầu tiên
             </span>{" "}
             — chỉ có tại RestoMS Long Xuyên.
@@ -431,9 +424,9 @@ export default function CustomerHomePage() {
           <div className="flex flex-col xs:flex-row items-center gap-3 pt-2">
             <Link href="/menu" aria-label="Khám phá menu nhà hàng">
               <Button
-                variant="solid"
+                variant="primary"
                 size="lg"
-                className="bg-white text-primary-600 hover:bg-primary-50 border-transparent focus-visible:ring-white"
+                style={{ backgroundColor: "#ffffff", color: "#c2410c", border: "1px solid transparent" }}
               >
                 Khám Phá Menu
               </Button>
@@ -442,7 +435,7 @@ export default function CustomerHomePage() {
               <Button
                 variant="ghost"
                 size="lg"
-                className="text-white hover:bg-white/10 border border-white/30 focus-visible:ring-white"
+                style={{ color: "#ffffff", border: "1px solid rgba(255,255,255,0.4)" }}
               >
                 Gọi Đặt Bàn
               </Button>
@@ -450,7 +443,7 @@ export default function CustomerHomePage() {
           </div>
 
           {/* Trust note */}
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-white/70">
             Không cần thẻ tín dụng · Đặt bàn miễn phí · Huỷ bất cứ lúc nào
           </p>
         </div>

@@ -1,10 +1,8 @@
 /* ── Google Fonts ─────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ── Tailwind Directives ──────────────────────────────────── */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ── Tailwind v4 ─────────────────────────────────────────────────────────── */
+@import "tailwindcss";
 
 /* ── Base Layer ───────────────────────────────────────────── */
 @layer base {
@@ -39,11 +37,11 @@
   }
 
   body {
-    background-color: theme("colors.surface.muted");
-    color: theme("colors.neutral.800");
-    font-family: theme("fontFamily.sans");
-    font-size: theme("fontSize.base[0]");
-    line-height: theme("fontSize.base[1].lineHeight");
+    background-color: var(--color-surface-muted);
+    color: #1e293b;          /* neutral-800 */
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100dvh;
@@ -64,38 +62,38 @@
 
   /* ── Focus ring — accessible, on-brand ── */
   :focus-visible {
-    outline: 2px solid theme("colors.primary.500");
+    outline: 2px solid #f97316;  /* primary-500 */
     outline-offset: 2px;
-    border-radius: theme("borderRadius.sm");
+    border-radius: 0.25rem;      /* sm */
   }
 
   /* ── Typography defaults ── */
   h1, h2, h3, h4, h5, h6 {
-    font-family: theme("fontFamily.display");
-    font-weight: theme("fontWeight.bold");
-    color: theme("colors.neutral.900");
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
+    color: #0f172a;             /* neutral-900 */
     line-height: 1.2;
   }
 
-  h1 { font-size: theme("fontSize.5xl[0]"); }
-  h2 { font-size: theme("fontSize.4xl[0]"); }
-  h3 { font-size: theme("fontSize.3xl[0]"); }
-  h4 { font-size: theme("fontSize.2xl[0]"); }
-  h5 { font-size: theme("fontSize.xl[0]"); }
-  h6 { font-size: theme("fontSize.lg[0]"); }
+  h1 { font-size: 3rem; }      /* 5xl */
+  h2 { font-size: 2.25rem; }   /* 4xl */
+  h3 { font-size: 1.875rem; }  /* 3xl */
+  h4 { font-size: 1.5rem; }    /* 2xl */
+  h5 { font-size: 1.25rem; }   /* xl  */
+  h6 { font-size: 1.125rem; }  /* lg  */
 
   p {
-    color: theme("colors.neutral.700");
+    color: #334155;             /* neutral-700 */
     line-height: 1.7;
   }
 
   a {
-    color: theme("colors.primary.600");
+    color: #ea580c;             /* primary-600 */
     text-decoration: none;
   }
 
   a:hover {
-    color: theme("colors.primary.700");
+    color: #c2410c;             /* primary-700 */
   }
 
   img,
@@ -112,16 +110,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: theme("colors.neutral.100");
+    background: #f1f5f9;         /* neutral-100 */
   }
 
   ::-webkit-scrollbar-thumb {
-    background: theme("colors.neutral.300");
+    background: #cbd5e1;         /* neutral-300 */
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: theme("colors.neutral.400");
+    background: #94a3b8;         /* neutral-400 */
   }
 }
 
@@ -129,44 +127,110 @@
 @layer components {
   /* Reusable card surface */
   .card {
-    @apply bg-surface rounded-xl shadow-card border border-neutral-100 p-6;
+    background-color: #ffffff;
+    border-radius: 0.75rem;          /* rounded-xl */
+    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.08); /* shadow-card */
+    border: 1px solid #f1f5f9;       /* neutral-100 */
+    padding: 1.5rem;                 /* p-6 */
   }
 
   .card-hover {
-    @apply card transition-shadow duration-[250ms] hover:shadow-card-hover;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.08);
+    border: 1px solid #f1f5f9;
+    padding: 1.5rem;
+    transition-property: box-shadow;
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 0.12); /* shadow-card-hover */
   }
 
   /* Primary button */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2
-           bg-primary-500 hover:bg-primary-600 active:bg-primary-700
-           text-white font-semibold text-sm
-           px-5 py-2.5 rounded-lg
-           shadow-sm hover:shadow-md
-           disabled:opacity-50 disabled:cursor-not-allowed
-           focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #f97316;       /* primary-500 */
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;       /* px-5 py-2.5 */
+    border-radius: 0.5rem;           /* rounded-lg */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    border: none;
+    cursor: pointer;
+    transition-property: background-color, box-shadow;
+    transition-duration: 250ms;
+  }
+  .btn-primary:hover {
+    background-color: #ea580c;       /* primary-600 */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  .btn-primary:active  { background-color: #c2410c; }  /* primary-700 */
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #fb923c; /* ring-2 ring-primary-400 ring-offset-2 */
   }
 
   /* Ghost / outline button */
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2
-           border border-primary-500 text-primary-600
-           hover:bg-primary-50 active:bg-primary-100
-           font-semibold text-sm
-           px-5 py-2.5 rounded-lg
-           disabled:opacity-50 disabled:cursor-not-allowed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid #f97316;       /* primary-500 */
+    color: #ea580c;                  /* primary-600 */
+    background-color: transparent;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition-property: background-color;
+    transition-duration: 250ms;
+  }
+  .btn-outline:hover  { background-color: #fff7ed; }   /* primary-50 */
+  .btn-outline:active { background-color: #ffedd5; }   /* primary-100 */
+  .btn-outline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  /* Badge */
+  /* Badge base */
   .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-0.5
-           rounded-full text-xs font-medium;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.625rem;      /* px-2.5 py-0.5 */
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
   }
 
-  .badge-success { @apply badge bg-success-light text-success-dark; }
-  .badge-warning { @apply badge bg-warning-light text-warning-dark; }
-  .badge-error   { @apply badge bg-error-light   text-error-dark;   }
-  .badge-info    { @apply badge bg-info-light     text-info-dark;    }
+  .badge-success,
+  .badge-warning,
+  .badge-error,
+  .badge-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  .badge-success { background-color: #dcfce7; color: #15803d; }
+  .badge-warning { background-color: #fef9c3; color: #a16207; }
+  .badge-error   { background-color: #fee2e2; color: #b91c1c; }
+  .badge-info    { background-color: #dbeafe; color: #1d4ed8; }
 }
 
 /* ── Utility Layer ────────────────────────────────────────── */
@@ -181,7 +245,9 @@
 
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary-500 to-secondary-500
-           bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, #f97316, #f59e0b); /* primary-500 → secondary-500 */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

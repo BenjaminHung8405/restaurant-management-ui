@@ -15,7 +15,7 @@ import Navbar from "@/components/customer/Navbar";
  */
 export default function CustomerLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-surface-muted">
+    <div className="min-h-screen flex flex-col bg-neutral-50">
       {/* ── Global navigation ─────────────────────────────────────────── */}
       <Navbar />
 

@@ -4,80 +4,69 @@ import type { LucideIcon } from "lucide-react";
 import type React from "react";
 import LoadingSpinner from "./LoadingSpinner";
 
-// ── Variant & size type unions ────────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
 type ButtonVariant = "primary" | "solid" | "outline" | "ghost" | "danger";
 type ButtonSize    = "sm" | "md" | "lg";
 
-// ── Props ─────────────────────────────────────────────────────────────────────
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:      ButtonVariant;
   size?:         ButtonSize;
   isLoading?:    boolean;
-  /** Lucide icon component rendered left or right of the label */
   icon?:         LucideIcon;
   iconPosition?: "left" | "right";
 }
 
-// ── Style maps ────────────────────────────────────────────────────────────────
-const variantClasses: Record<ButtonVariant, string> = {
-  primary: [
-    "bg-primary-500 text-white",
-    "hover:bg-primary-600 hover:-translate-y-px",
-    "focus-visible:ring-primary-400",
-    "active:bg-primary-700",
-    "border border-transparent",
-  ].join(" "),
+// ── Inline style maps — immune to Tailwind v4 purge ───────────────────────────
+// All color-bearing properties use inline styles; Tailwind only handles
+// layout, spacing, radius and transitions (safe utility names).
 
-  solid: [
-    "bg-blue-800 text-white",
-    "hover:bg-blue-900 hover:-translate-y-px",
-    "focus-visible:ring-blue-700",
-    "active:bg-blue-950",
-    "border border-transparent",
-  ].join(" "),
-
-  outline: [
-    "bg-transparent text-primary-600",
-    "border-2 border-primary-500",
-    "hover:bg-primary-50 hover:-translate-y-px",
-    "focus-visible:ring-primary-400",
-    "active:bg-primary-100",
-  ].join(" "),
-
-  ghost: [
-    "bg-transparent text-primary-600",
-    "border border-transparent",
-    "hover:bg-primary-50",
-    "focus-visible:ring-primary-300",
-    "active:bg-primary-100",
-  ].join(" "),
-
-  danger: [
-    "bg-red-600 text-white",
-    "border border-transparent",
-    "hover:bg-red-700 hover:-translate-y-px",
-    "focus-visible:ring-red-500",
-    "active:bg-red-800",
-  ].join(" "),
+type VariantStyle = {
+  base:    React.CSSProperties;
+  hover:   React.CSSProperties;
+  active:  React.CSSProperties;
+  classes: string;           // non-color Tailwind classes only
 };
 
-const sizeClasses: Record<ButtonSize, string> = {
+const VARIANT_STYLES: Record<ButtonVariant, VariantStyle> = {
+  primary: {
+    base:    { backgroundColor: "#f97316", color: "#ffffff", border: "1px solid transparent" },
+    hover:   { backgroundColor: "#ea580c" },
+    active:  { backgroundColor: "#c2410c" },
+    classes: "shadow-sm hover:shadow-md hover:-translate-y-px",
+  },
+  solid: {
+    base:    { backgroundColor: "#1e40af", color: "#ffffff", border: "1px solid transparent" },
+    hover:   { backgroundColor: "#1e3a8a" },
+    active:  { backgroundColor: "#1e3a8a" },
+    classes: "shadow-sm hover:shadow-md hover:-translate-y-px",
+  },
+  outline: {
+    base:    { backgroundColor: "transparent", color: "#ea580c", border: "2px solid #f97316" },
+    hover:   { backgroundColor: "#fff7ed" },
+    active:  { backgroundColor: "#ffedd5" },
+    classes: "hover:-translate-y-px",
+  },
+  ghost: {
+    base:    { backgroundColor: "transparent", color: "#ea580c", border: "1px solid transparent" },
+    hover:   { backgroundColor: "#fff7ed" },
+    active:  { backgroundColor: "#ffedd5" },
+    classes: "",
+  },
+  danger: {
+    base:    { backgroundColor: "#dc2626", color: "#ffffff", border: "1px solid transparent" },
+    hover:   { backgroundColor: "#b91c1c" },
+    active:  { backgroundColor: "#991b1b" },
+    classes: "shadow-sm hover:shadow-md hover:-translate-y-px",
+  },
+};
+
+const SIZE_CLASSES: Record<ButtonSize, string> = {
   sm: "px-3 py-1.5 text-sm gap-1.5 rounded-md",
-  md: "px-6 py-3 text-sm gap-2 rounded-lg",
+  md: "px-6 py-3   text-sm gap-2   rounded-lg",
   lg: "px-8 py-3.5 text-base gap-2.5 rounded-lg",
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
-
-/**
- * Button — polymorphic, accessible button following MASTER.md spec.
- *
- * @param variant      - Visual style  (default: "primary")
- * @param size         - Padding scale (default: "md")
- * @param isLoading    - Replaces left icon with spinner and disables interaction
- * @param icon         - Lucide icon component
- * @param iconPosition - "left" | "right" (default: "left")
- */
 export default function Button({
   variant      = "primary",
   size         = "md",
@@ -86,31 +75,24 @@ export default function Button({
   iconPosition = "left",
   children,
   className    = "",
+  style,
   disabled,
   type         = "button",
   ...props
 }: ButtonProps) {
   const isDisabled = disabled || isLoading;
   const iconSize   = size === "lg" ? 20 : size === "sm" ? 14 : 16;
+  const vs         = VARIANT_STYLES[variant] ?? VARIANT_STYLES.primary;
 
-  const baseClasses = [
+  const layoutClasses = [
     "inline-flex items-center justify-center",
     "font-semibold",
-    // MASTER.md: 200ms ease, no layout-shifting transforms on disabled
     "transition-all duration-200 ease-in-out",
     "cursor-pointer",
-    // MASTER.md: focus rings must always be visible
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+    SIZE_CLASSES[size],
+    vs.classes,
     isDisabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
-    isDisabled ? "transform-none" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const classes = [
-    baseClasses,
-    variantClasses[variant] ?? variantClasses.primary,
-    sizeClasses[size]       ?? sizeClasses.md,
     className,
   ]
     .filter(Boolean)
@@ -122,25 +104,36 @@ export default function Button({
       disabled={isDisabled}
       aria-disabled={isDisabled}
       aria-busy={isLoading}
-      className={classes}
+      className={layoutClasses}
+      style={{ ...vs.base, ...style }}
+      onMouseEnter={(e) => {
+        if (!isDisabled) Object.assign((e.currentTarget as HTMLButtonElement).style, vs.hover);
+        props.onMouseEnter?.(e);
+      }}
+      onMouseLeave={(e) => {
+        if (!isDisabled) Object.assign((e.currentTarget as HTMLButtonElement).style, vs.base, style);
+        props.onMouseLeave?.(e);
+      }}
+      onMouseDown={(e) => {
+        if (!isDisabled) Object.assign((e.currentTarget as HTMLButtonElement).style, vs.active);
+        props.onMouseDown?.(e);
+      }}
+      onMouseUp={(e) => {
+        if (!isDisabled) Object.assign((e.currentTarget as HTMLButtonElement).style, vs.hover);
+        props.onMouseUp?.(e);
+      }}
       {...props}
     >
-      {/* Left icon / loading spinner */}
       {isLoading ? (
-        <LoadingSpinner
-          size={size === "lg" ? "sm" : "xs"}
-          colorClass="text-current"
-        />
+        <LoadingSpinner size={size === "lg" ? "sm" : "xs"} colorClass="text-current" />
       ) : (
         Icon && iconPosition === "left" && (
           <Icon size={iconSize} aria-hidden="true" strokeWidth={2} />
         )
       )}
 
-      {/* Label */}
       {children && <span>{children}</span>}
 
-      {/* Right icon — only when not loading */}
       {!isLoading && Icon && iconPosition === "right" && (
         <Icon size={iconSize} aria-hidden="true" strokeWidth={2} />
       )}
