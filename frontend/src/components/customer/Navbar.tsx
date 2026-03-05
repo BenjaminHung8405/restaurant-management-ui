@@ -9,9 +9,9 @@ import { useCallback, useEffect, useState } from "react";
 
 // ── Nav links ─────────────────────────────────────────────────────────────────
 const NAV_LINKS = [
-  { label: "Home",     href: "/" },
-  { label: "Menu",     href: "/menu" },
-  { label: "About Us", href: "/about" },
+  { label: "Trang chủ", href: "/" },
+  { label: "Thực đơn",  href: "/menu" },
+  { label: "Giới thiệu", href: "/about" },
 ];
 
 /**
@@ -19,15 +19,15 @@ const NAV_LINKS = [
  *
  * Features:
  *  - Glassmorphism effect (bg-white/80 backdrop-blur-md) per customer.md
- *  - Subtle bottom border
+ *  - Subtle bottom border that deepens on scroll
  *  - Cart icon with live item-count badge from useCartStore
  *  - Responsive: hamburger menu on mobile, horizontal links on desktop
  *  - Accessible: skip-to-content, aria-labels, visible focus rings
  */
 export default function Navbar() {
-  const pathname     = usePathname();
-  const [mobileOpen, setMobileOpen]   = useState(false);
-  const [scrolled,   setScrolled]     = useState(false);
+  const pathname                        = usePathname();
+  const [mobileOpen, setMobileOpen]     = useState(false);
+  const [scrolled,   setScrolled]       = useState(false);
 
   // ── Cart badge ─────────────────────────────────────────────────────────────
   const totalItems = useCartStore((s) => s.totalItems);
@@ -66,7 +66,7 @@ export default function Navbar() {
           "focus:shadow-lg focus:outline-none",
         ].join(" ")}
       >
-        Skip to content
+        Chuyển đến nội dung chính
       </a>
 
       {/* ── Navbar ───────────────────────────────────────────────────────── */}
@@ -78,7 +78,7 @@ export default function Navbar() {
           "bg-white/80 backdrop-blur-md",
           // Height — MASTER.md: 64px
           "h-16",
-          // Horizontal padding — MASTER.md: 0 32px
+          // Horizontal padding
           "px-4 sm:px-8",
           // Bottom border — always subtle; deepen on scroll
           scrolled
@@ -101,7 +101,7 @@ export default function Navbar() {
               "focus-visible:outline-none focus-visible:ring-2",
               "focus-visible:ring-primary-400 focus-visible:ring-offset-2 rounded-sm",
             ].join(" ")}
-            aria-label="Restaurant Management System — Home"
+            aria-label="RestoMS — Trang chủ"
           >
             <UtensilsCrossed
               size={24}
@@ -127,7 +127,6 @@ export default function Navbar() {
                   <Link
                     href={href}
                     className={[
-                      // Base — MASTER.md: Inter Medium 500, 0.875rem
                       "relative px-4 py-2 rounded-lg",
                       "text-sm font-medium",
                       "transition-colors duration-200 ease-in-out",
@@ -158,7 +157,10 @@ export default function Navbar() {
           {/* ── Right actions ─────────────────────────────────────────── */}
           <div className="flex items-center gap-2">
             {/* Cart button with badge */}
-            <Link href="/cart" aria-label={`Cart — ${totalItems} item${totalItems !== 1 ? "s" : ""}`}>
+            <Link
+              href="/cart"
+              aria-label={`Giỏ hàng — ${totalItems} sản phẩm`}
+            >
               <span className="relative inline-flex">
                 <Button
                   variant="ghost"
@@ -168,7 +170,7 @@ export default function Navbar() {
                   tabIndex={-1}
                   className="text-neutral-700 hover:text-primary-500"
                 >
-                  <span className="hidden sm:inline">Cart</span>
+                  <span className="hidden sm:inline">Giỏ hàng</span>
                 </Button>
 
                 {/* Badge — red, absolute positioned */}
@@ -205,14 +207,14 @@ export default function Navbar() {
                 "focus-visible:ring-primary-400 focus-visible:ring-offset-2",
                 "cursor-pointer",
               ].join(" ")}
-              aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={mobileOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
               aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
               onClick={() => setMobileOpen((prev) => !prev)}
             >
               {mobileOpen
-                ? <X      size={22} strokeWidth={2} aria-hidden="true" />
-                : <Menu   size={22} strokeWidth={2} aria-hidden="true" />
+                ? <X    size={22} strokeWidth={2} aria-hidden="true" />
+                : <Menu size={22} strokeWidth={2} aria-hidden="true" />
               }
             </button>
           </div>
@@ -233,7 +235,7 @@ export default function Navbar() {
         id="mobile-menu"
         role="dialog"
         aria-modal="true"
-        aria-label="Navigation menu"
+        aria-label="Menu điều hướng"
         className={[
           "fixed top-16 inset-x-0 z-40 md:hidden",
           "bg-white/95 backdrop-blur-md",

@@ -23,8 +23,7 @@ export default function CustomerLayout({ children }) {
       <main
         id="main-content"
         className="flex-grow"
-        // Offset for the sticky navbar height (64px = h-16)
-        // so anchor #main-content lands correctly
+        // tabIndex allows the skip-link to focus this element
         tabIndex={-1}
       >
         {children}

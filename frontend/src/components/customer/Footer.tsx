@@ -1,33 +1,33 @@
 import {
-    Facebook,
-    Instagram,
-    Mail,
-    MapPin,
-    Phone,
-    Twitter,
-    UtensilsCrossed,
+  Facebook,
+  Instagram,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+  UtensilsCrossed,
 } from "lucide-react";
 import Link from "next/link";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const QUICK_LINKS = [
-  { label: "Menu",        href: "/menu" },
-  { label: "Reservation", href: "/reservation" },
-  { label: "About Us",    href: "/about" },
-  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Thực đơn",         href: "/menu" },
+  { label: "Đặt bàn",          href: "/reservation" },
+  { label: "Giới thiệu",       href: "/about" },
+  { label: "Chính sách bảo mật", href: "/privacy" },
 ];
 
 const CONTACT_INFO = [
   {
     icon: MapPin,
-    label: "Address",
-    value: "123 Flavor Street, Food City, FC 10001",
+    label: "Địa chỉ",
+    value: "123 Đường Hương Vị, TP. Ẩm Thực, HV 10001",
   },
   {
     icon: Phone,
-    label: "Phone",
-    value: "+1 (555) 012-3456",
-    href: "tel:+15550123456",
+    label: "Điện thoại",
+    value: "+84 (28) 0123-4567",
+    href: "tel:+842801234567",
   },
   {
     icon: Mail,
@@ -75,7 +75,7 @@ export default function Footer() {
                 "focus-visible:ring-offset-slate-900 rounded-sm",
                 "w-fit",
               ].join(" ")}
-              aria-label="Restaurant Management System — Home"
+              aria-label="RestoMS — Trang chủ"
             >
               <UtensilsCrossed
                 size={22}
@@ -91,19 +91,20 @@ export default function Footer() {
 
             {/* Description */}
             <p className="text-sm leading-[1.7] text-white/60 max-w-xs">
-              Bringing great food and seamless dining experiences to your table.
-              Order online, reserve a seat, and enjoy every bite.
+              Mang đến những bữa ăn ngon và trải nghiệm ẩm thực tuyệt vời ngay
+              tại bàn của bạn. Đặt món trực tuyến, giữ chỗ và thưởng thức từng
+              miếng ăn.
             </p>
 
             {/* Social links */}
-            <div className="flex items-center gap-3" aria-label="Social media links">
+            <div className="flex items-center gap-3" aria-label="Mạng xã hội">
               {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Visit our ${label} page`}
+                  aria-label={`Truy cập trang ${label} của chúng tôi`}
                   className={[
                     "p-2 rounded-lg",
                     "text-white/50 hover:text-primary-400",
@@ -123,7 +124,7 @@ export default function Footer() {
           {/* ── Column 2: Quick Links ─────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">
-              Quick Links
+              Liên kết nhanh
             </h3>
             <ul className="flex flex-col gap-2.5" role="list">
               {QUICK_LINKS.map(({ label, href }) => (
@@ -158,7 +159,7 @@ export default function Footer() {
           {/* ── Column 3: Contact Info ────────────────────────────────────── */}
           <div className="flex flex-col gap-5">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white/40">
-              Contact Us
+              Liên hệ
             </h3>
             <ul className="flex flex-col gap-4" role="list">
               {CONTACT_INFO.map(({ icon: Icon, label, value, href }) => (
@@ -201,8 +202,8 @@ export default function Footer() {
       <div className="max-w-[1280px] mx-auto px-4 sm:px-8 py-6">
         <p className="text-center text-xs text-white/40">
           © {currentYear}{" "}
-          <span className="text-white/60 font-medium">RestoMS</span>. All rights
-          reserved. Built with ❤️ for great dining experiences.
+          <span className="text-white/60 font-medium">RestoMS</span>. Bảo lưu
+          mọi quyền. Được xây dựng với ❤️ cho trải nghiệm ẩm thực tuyệt vời.
         </p>
       </div>
     </footer>
