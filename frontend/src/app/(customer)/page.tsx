@@ -184,42 +184,54 @@ export default async function CustomerHomePage() {
         />
 
         {/* Content — customer.md: single column, centered, max-w 800px */}
-        <div className="relative z-10 max-w-[800px] mx-auto text-center flex flex-col items-center gap-6">
+        <div className="relative z-10 max-w-[900px] mx-auto text-center flex flex-col items-center gap-8">
 
           {/* Eyebrow label */}
           <span
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold shadow-sm"
             style={{
               backgroundColor: "#fff7ed",
               color: "#c2410c",
-              border: "1.5px solid #fed7aa",
+              border: "1px solid #fed7aa",
             }}
           >
-            <Star size={13} strokeWidth={2.5} aria-hidden="true" style={{ fill: "#f97316", color: "#f97316" }} />
+            <Star size={16} strokeWidth={2.5} aria-hidden="true" className="text-amber-500 fill-amber-500" />
             {HERO.badge}
           </span>
 
+          {/* Restaurant Name */}
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-amber-600 font-extrabold tracking-widest uppercase text-sm sm:text-base">
+              Chào mừng đến với
+            </span>
+            <h1 className="font-display font-black text-6xl sm:text-7xl lg:text-8xl text-neutral-900 tracking-tight drop-shadow-sm">
+              Resto<span className="text-amber-500">MS</span>
+            </h1>
+          </div>
+
           {/* Headline — MASTER.md: display font, 5xl, bold */}
-          <h1
+          <h2
             className={[
               "font-display font-bold",
-              "text-4xl sm:text-5xl lg:text-6xl",
-              "text-neutral-900 leading-[1.15]",
+              "text-3xl sm:text-4xl lg:text-5xl",
+              "text-neutral-800 leading-[1.25]",
               "text-balance",
             ].join(" ")}
           >
             {HERO.headline.part1}{" "}
-            <span className="gradient-text">{HERO.headline.highlight}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">
+              {HERO.headline.highlight}
+            </span>
             {HERO.headline.part2}{" "}
-            <span style={{ color: "#7c2d12" }}>{HERO.headline.emphasis}</span>
-          </h1>
+            <span className="text-amber-700">{HERO.headline.emphasis}</span>
+          </h2>
 
           {/* Sub-description — customer.md: short, focused */}
           <p
             className={[
-              "max-w-[560px]",
-              "text-base sm:text-lg leading-[1.75]",
-              "text-neutral-600",
+              "max-w-[600px]",
+              "text-lg sm:text-xl leading-[1.8]",
+              "text-neutral-600 font-medium",
               "text-pretty",
             ].join(" ")}
           >
@@ -227,21 +239,21 @@ export default async function CustomerHomePage() {
           </p>
 
           {/* CTA row — customer.md: center, large CTA button */}
-          <div className="flex flex-col xs:flex-row items-center gap-3 pt-2">
+          <div className="flex flex-col xs:flex-row items-center gap-4 mt-2">
             <Link href="/menu" aria-label="Xem thực đơn nhà hàng">
-              <Button variant="primary" size="lg">
+              <Button variant="primary" size="lg" className="w-full sm:w-auto text-lg px-8 py-4 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all rounded-xl">
                 {HERO.cta.primary}
               </Button>
             </Link>
             <Link href="#reservation" aria-label="Đặt bàn tại nhà hàng">
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-4 border-2 border-amber-500 text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
                 {HERO.cta.secondary}
               </Button>
             </Link>
           </div>
 
           {/* Social proof micro-strip */}
-          <div className="flex items-center gap-6 pt-4 text-sm text-neutral-500">
+          <div className="flex flex-wrap justify-center items-center gap-y-3 gap-x-6 mt-6 px-8 py-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-neutral-100 shadow-sm text-sm sm:text-base text-neutral-600 font-semibold">
             <span className="flex items-center gap-1.5">
               <span className="font-bold text-neutral-800">{HERO.socialProof.rating}</span>
               <span className="flex">

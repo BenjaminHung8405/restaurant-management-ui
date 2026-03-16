@@ -101,23 +101,24 @@ export default function Navbar() {
           <Link
             href="/"
             className={[
-              "flex items-center gap-2",
-              "font-display font-bold text-xl text-primary-500",
-              "hover:text-primary-600 transition-colors duration-200",
+              "flex items-center gap-2.5",
+              "font-display font-black text-2xl tracking-tight text-neutral-900",
+              "hover:text-amber-600 transition-colors duration-200",
               "focus-visible:outline-none focus-visible:ring-2",
-              "focus-visible:ring-primary-400 focus-visible:ring-offset-2 rounded-sm",
+              "focus-visible:ring-amber-400 focus-visible:ring-offset-2 rounded-lg",
+              "p-1",
             ].join(" ")}
             aria-label="RestoMS — Trang chủ"
           >
-            <UtensilsCrossed
-              size={24}
-              strokeWidth={2}
-              aria-hidden="true"
-              className="text-primary-500"
-            />
+            <div className="bg-amber-500 p-2 rounded-xl text-white shadow-sm">
+              <UtensilsCrossed
+                size={22}
+                strokeWidth={2.5}
+                aria-hidden="true"
+              />
+            </div>
             <span className="hidden xs:block">
-              <span className="text-primary-500">Resto</span>
-              <span className="text-neutral-800">MS</span>
+              Resto<span className="text-amber-500">MS</span>
             </span>
           </Link>
 
