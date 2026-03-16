@@ -14,14 +14,13 @@ const QUICK_LINKS = [
   { label: "Thực đơn",         href: "/menu" },
   { label: "Đặt bàn",          href: "/reservation" },
   { label: "Giới thiệu",       href: "/about" },
-  { label: "Chính sách bảo mật", href: "/privacy" },
 ];
 
 const CONTACT_INFO = [
   {
     icon: MapPin,
     label: "Địa chỉ",
-    value: "123 Đường Hương Vị, TP. Ẩm Thực, HV 10001",
+    value: "123 Đường Hương Vị, TP. Ẩm Thực",
   },
   {
     icon: Phone,
