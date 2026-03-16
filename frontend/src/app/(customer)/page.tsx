@@ -52,34 +52,35 @@ function DishCard({ dish }: { dish: DishPreview }) {
     <article
       className={[
         "group relative flex flex-col",
-        "bg-white rounded-2xl overflow-hidden",
+        "bg-white rounded-3xl overflow-hidden",
         "border border-neutral-100",
-        "shadow-card",
-        // admin.md / customer.md: smooth hover lift
-        "hover:-translate-y-1 hover:shadow-lg",
-        "transition-all duration-[250ms] ease-smooth",
+        "shadow-sm",
+        "hover:-translate-y-2 hover:shadow-2xl",
+        "transition-all duration-300 ease-in-out",
       ].join(" ")}
     >
       {/* Image */}
-      <div className="relative h-52 w-full overflow-hidden">
+      <div className="relative h-64 w-full overflow-hidden bg-neutral-100">
         <Image
           src={imageUrl}
           alt={imageAlt}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500 ease-smooth"
-          // customer.md: performance — lazy below fold; hero images use priority
+          className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
         />
+        
+        {/* Dark Overlay on Hover */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
 
         {/* Badge */}
         {badge && (
           <span
             className={[
-              "absolute top-3 left-3",
-              "px-2.5 py-1 rounded-full",
-              "bg-primary-500 text-white",
-              "text-[11px] font-semibold leading-none",
-              "shadow-sm",
+              "absolute top-4 left-4",
+              "px-3 py-1.5 rounded-full",
+              "bg-amber-500 text-white",
+              "text-xs font-bold tracking-wide",
+              "shadow-md z-10",
             ].join(" ")}
           >
             {badge}
@@ -88,29 +89,29 @@ function DishCard({ dish }: { dish: DishPreview }) {
       </div>
 
       {/* Body */}
-      <div className="flex flex-col flex-1 p-5 gap-2">
-        <h3 className="text-base font-semibold text-neutral-900 font-display leading-snug">
+      <div className="flex flex-col flex-1 p-6 gap-3 z-10 bg-white">
+        <h3 className="text-xl font-bold text-neutral-900 font-display line-clamp-1 group-hover:text-amber-600 transition-colors duration-200">
           {name}
         </h3>
-        <p className="text-sm leading-[1.6] text-neutral-500 flex-1">
+        <p className="text-sm leading-relaxed text-neutral-500 line-clamp-2 flex-1">
           {description}
         </p>
 
         {/* Price + CTA row */}
-        <div className="flex items-center justify-between pt-3 mt-auto border-t border-neutral-100">
-          <span
-            className="text-base font-bold"
-            style={{ color: "#f97316" }}
-          >
+        <div className="flex items-center justify-between pt-4 mt-auto border-t border-neutral-50">
+          <span className="text-xl font-extrabold text-amber-600">
             {price}
           </span>
           <Link
             href="/menu"
-            className="text-sm font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm"
-            style={{ color: "#9a3412" }}
+            className={[
+              "flex items-center gap-1.5 text-sm font-bold",
+              "text-neutral-500 hover:text-amber-600",
+              "transition-colors duration-200",
+            ].join(" ")}
             aria-label={`Xem chi tiết ${name}`}
           >
-            Xem thêm →
+            Xem <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
           </Link>
         </div>
       </div>
@@ -298,37 +299,37 @@ export default async function CustomerHomePage() {
 
       {/* ══ 3. FEATURED DISHES ════════════════════════════════════════════ */}
       <section
-        className="py-20 px-4 sm:px-8 bg-white"
+        className="py-24 px-4 sm:px-8 bg-neutral-50/50"
         aria-labelledby="dishes-heading"
       >
-        <div className="max-w-[1280px] mx-auto flex flex-col items-center gap-12">
+        <div className="max-w-[1280px] mx-auto flex flex-col items-center gap-14">
 
           {/* Section header */}
-          <div className="text-center max-w-[520px]">
-            <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#b45309" }}>
+          <div className="text-center max-w-[600px]">
+            <p className="text-sm font-bold uppercase tracking-widest mb-3 text-amber-600">
               {DISHES_SECTION.label}
             </p>
             <h2
               id="dishes-heading"
-              className="font-display font-bold text-3xl sm:text-4xl text-neutral-900"
+              className="font-display font-black text-4xl sm:text-5xl text-neutral-900 mb-4"
             >
               {DISHES_SECTION.heading}
             </h2>
-            <p className="mt-3 text-base text-neutral-500 leading-[1.7]">
+            <p className="text-lg text-neutral-500 leading-relaxed">
               {DISHES_SECTION.description}
             </p>
           </div>
 
           {/* Dish cards grid */}
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredDishes.map((dish) => (
               <DishCard key={dish.id} dish={dish} />
             ))}
           </div>
 
           {/* Secondary CTA — view all menu */}
-          <Link href="/menu" aria-label="Xem toàn bộ thực đơn">
-            <Button variant="outline" size="md">
+          <Link href="/menu" aria-label="Xem toàn bộ thực đơn" className="mt-4">
+            <Button variant="outline" size="lg" className="border-2 border-amber-500 text-amber-600 hover:bg-amber-50">
               {DISHES_SECTION.cta}
             </Button>
           </Link>
