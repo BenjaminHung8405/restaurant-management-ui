@@ -1,7 +1,6 @@
 import Button from "@/components/common/Button";
 import {
   CTA_BANNER,
-  DISHES,
   DISHES_SECTION,
   FEATURES,
   FEATURES_SECTION,
@@ -129,7 +128,34 @@ function DishCard({ dish }: { dish: DishPreview }) {
  *
  * customer.md: mobile-first, max-width 1280px, low density, large CTA
  */
-export default function CustomerHomePage() {
+export default async function CustomerHomePage() {
+  let featuredDishes: DishPreview[] = [];
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"}/menu-items?isFeatured=true`, {
+      next: { revalidate: 60 },
+    });
+    const json = await res.json();
+    
+    if (json?.data && Array.isArray(json.data)) {
+      featuredDishes = json.data.slice(0, 3).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(item.price),
+        imageUrl: item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80",
+        imageAlt: item.name,
+        badge: "Đặc biệt",
+      }));
+    }
+  } catch (error) {
+    console.error("Failed to fetch featured dishes:", error);
+    // Ignore fallback to empty array
+  }
+
   return (
     <div className="flex flex-col">
 
@@ -295,7 +321,7 @@ export default function CustomerHomePage() {
 
           {/* Dish cards grid */}
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {DISHES.map((dish) => (
+            {featuredDishes.map((dish) => (
               <DishCard key={dish.id} dish={dish} />
             ))}
           </div>

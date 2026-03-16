@@ -15,7 +15,7 @@ export interface FeatureItem {
 }
 
 export interface DishPreview {
-  id: number;
+  id: string | number;
   name: string;
   description: string;
   price: string;
@@ -47,44 +47,6 @@ export const FEATURES: FeatureItem[] = [
     title: "Không gian sang trọng",
     description:
       "Thiết kế nội thất hiện đại, ấm cúng — lý tưởng cho mọi dịp đặc biệt của bạn.",
-  },
-];
-
-// ── Featured Dishes Section ───────────────────────────────────────────────────
-
-export const DISHES: DishPreview[] = [
-  {
-    id: 1,
-    name: "Bò Lúc Lắc Truffle",
-    description:
-      "Thăn bò Wagyu xào cùng nấm truffle đen, ăn kèm khoai tây chiên giòn.",
-    price: "185.000đ",
-    imageUrl:
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80",
-    imageAlt: "Bò lúc lắc truffle trình bày đẹp",
-    badge: "Bán chạy",
-  },
-  {
-    id: 2,
-    name: "Cơm Tấm Sườn Nướng",
-    description:
-      "Sườn heo nướng than hoa, ăn kèm cơm tấm, bì chả và nước mắm pha đặc trưng.",
-    price: "75.000đ",
-    imageUrl:
-      "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&q=80",
-    imageAlt: "Cơm tấm sườn nướng truyền thống",
-    badge: "Đặc biệt",
-  },
-  {
-    id: 3,
-    name: "Tôm Hùm Sốt Bơ Tỏi",
-    description:
-      "Tôm hùm Alaska tươi sống, sốt bơ tỏi thơm phức, phục vụ ngay tại bàn.",
-    price: "450.000đ",
-    imageUrl:
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
-    imageAlt: "Tôm hùm sốt bơ tỏi hấp dẫn",
-    badge: "Cao cấp",
   },
 ];
 
