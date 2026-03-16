@@ -30,7 +30,13 @@ export default function Navbar() {
   const [scrolled,   setScrolled]       = useState(false);
 
   // ── Cart badge ─────────────────────────────────────────────────────────────
-  const totalItems = useCartStore((s) => s.totalItems);
+  const items = useCartStore((s) => s.items);
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // ── Scroll shadow ──────────────────────────────────────────────────────────
   const handleScroll = useCallback(() => {
@@ -159,7 +165,7 @@ export default function Navbar() {
             {/* Cart button with badge */}
             <Link
               href="/cart"
-              aria-label={`Giỏ hàng — ${totalItems} sản phẩm`}
+              aria-label={`Giỏ hàng — ${mounted ? totalItems : 0} sản phẩm`}
             >
               <span className="relative inline-flex">
                 <Button
@@ -168,20 +174,20 @@ export default function Navbar() {
                   icon={ShoppingCart}
                   aria-hidden="true"
                   tabIndex={-1}
-                  className="text-neutral-700 hover:text-primary-500"
+                  className="text-neutral-700 hover:text-amber-500"
                 >
                   <span className="hidden sm:inline">Giỏ hàng</span>
                 </Button>
 
-                {/* Badge — red, absolute positioned */}
-                {totalItems > 0 && (
+                {/* Badge — absolute positioned */}
+                {mounted && totalItems > 0 && (
                   <span
                     className={[
                       "absolute -top-1 -right-1",
                       "min-w-[18px] h-[18px] px-1",
                       "flex items-center justify-center",
                       "rounded-full",
-                      "bg-red-500 text-white",
+                      "bg-amber-500 text-white",
                       "text-[10px] font-bold leading-none",
                       "pointer-events-none select-none",
                       "ring-2 ring-white",
