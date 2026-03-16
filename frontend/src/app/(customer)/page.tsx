@@ -1,83 +1,17 @@
 import Button from "@/components/common/Button";
-import type { LucideIcon } from "lucide-react";
-import { ChefHat, Leaf, Star, Utensils } from "lucide-react";
+import {
+  CTA_BANNER,
+  DISHES,
+  DISHES_SECTION,
+  FEATURES,
+  FEATURES_SECTION,
+  HERO,
+  type DishPreview,
+  type FeatureItem,
+} from "@/lib/staticData";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-// ── Local interfaces ──────────────────────────────────────────────────────────
-
-interface FeatureItem {
-  id:          number;
-  icon:        LucideIcon;
-  title:       string;
-  description: string;
-}
-
-interface DishPreview {
-  id:          number;
-  name:        string;
-  description: string;
-  price:       string;
-  imageUrl:    string;
-  imageAlt:    string;
-  badge?:      string;
-}
-
-// ── Static data ───────────────────────────────────────────────────────────────
-
-const FEATURES: FeatureItem[] = [
-  {
-    id:          1,
-    icon:        Leaf,
-    title:       "Nguyên liệu tươi sạch",
-    description:
-      "100% nguyên liệu được tuyển chọn từ các nông trại hữu cơ, đảm bảo tươi mới mỗi ngày.",
-  },
-  {
-    id:          2,
-    icon:        ChefHat,
-    title:       "Đầu bếp chuẩn sao",
-    description:
-      "Đội ngũ đầu bếp 5 sao với hơn 15 năm kinh nghiệm, mang đến hương vị đỉnh cao.",
-  },
-  {
-    id:          3,
-    icon:        Utensils,
-    title:       "Không gian sang trọng",
-    description:
-      "Thiết kế nội thất hiện đại, ấm cúng — lý tưởng cho mọi dịp đặc biệt của bạn.",
-  },
-];
-
-const DISHES: DishPreview[] = [
-  {
-    id:          1,
-    name:        "Bò Lúc Lắc Truffle",
-    description: "Thăn bò Wagyu xào cùng nấm truffle đen, ăn kèm khoai tây chiên giòn.",
-    price:       "185.000đ",
-    imageUrl:    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80",
-    imageAlt:    "Bò lúc lắc truffle trình bày đẹp",
-    badge:       "Bán chạy",
-  },
-  {
-    id:          2,
-    name:        "Cơm Tấm Sườn Nướng",
-    description: "Sườn heo nướng than hoa, ăn kèm cơm tấm, bì chả và nước mắm pha đặc trưng.",
-    price:       "75.000đ",
-    imageUrl:    "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800&q=80",
-    imageAlt:    "Cơm tấm sườn nướng truyền thống",
-    badge:       "Đặc biệt",
-  },
-  {
-    id:          3,
-    name:        "Tôm Hùm Sốt Bơ Tỏi",
-    description: "Tôm hùm Alaska tươi sống, sốt bơ tỏi thơm phức, phục vụ ngay tại bàn.",
-    price:       "450.000đ",
-    imageUrl:    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
-    imageAlt:    "Tôm hùm sốt bơ tỏi hấp dẫn",
-    badge:       "Cao cấp",
-  },
-];
 
 // ── Sub-components (Server-safe, no hooks) ────────────────────────────────────
 
@@ -235,7 +169,7 @@ export default function CustomerHomePage() {
             }}
           >
             <Star size={13} strokeWidth={2.5} aria-hidden="true" style={{ fill: "#f97316", color: "#f97316" }} />
-            Nhà hàng số 1 Long Xuyên
+            {HERO.badge}
           </span>
 
           {/* Headline — MASTER.md: display font, 5xl, bold */}
@@ -247,11 +181,10 @@ export default function CustomerHomePage() {
               "text-balance",
             ].join(" ")}
           >
-            Hương Vị{" "}
-            <span className="gradient-text">Đích Thực</span>
-            {", "}
-            Trải Nghiệm{" "}
-            <span style={{ color: "#7c2d12" }}>Tuyệt Vời</span>
+            {HERO.headline.part1}{" "}
+            <span className="gradient-text">{HERO.headline.highlight}</span>
+            {HERO.headline.part2}{" "}
+            <span style={{ color: "#7c2d12" }}>{HERO.headline.emphasis}</span>
           </h1>
 
           {/* Sub-description — customer.md: short, focused */}
@@ -263,21 +196,19 @@ export default function CustomerHomePage() {
               "text-pretty",
             ].join(" ")}
           >
-            Khám phá không gian ẩm thực đỉnh cao và những món ăn đậm đà bản
-            sắc ngay giữa lòng{" "}
-            <span className="font-medium text-neutral-800">Long Xuyên</span>.
+            {HERO.description}
           </p>
 
           {/* CTA row — customer.md: center, large CTA button */}
           <div className="flex flex-col xs:flex-row items-center gap-3 pt-2">
             <Link href="/menu" aria-label="Xem thực đơn nhà hàng">
               <Button variant="primary" size="lg">
-                Xem Thực Đơn
+                {HERO.cta.primary}
               </Button>
             </Link>
             <Link href="#reservation" aria-label="Đặt bàn tại nhà hàng">
               <Button variant="outline" size="lg">
-                Đặt Bàn
+                {HERO.cta.secondary}
               </Button>
             </Link>
           </div>
@@ -285,7 +216,7 @@ export default function CustomerHomePage() {
           {/* Social proof micro-strip */}
           <div className="flex items-center gap-6 pt-4 text-sm text-neutral-500">
             <span className="flex items-center gap-1.5">
-              <span className="font-bold text-neutral-800">4.9</span>
+              <span className="font-bold text-neutral-800">{HERO.socialProof.rating}</span>
               <span className="flex">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
@@ -296,15 +227,15 @@ export default function CustomerHomePage() {
                   />
                 ))}
               </span>
-              <span>(2.4k đánh giá)</span>
+              <span>({(HERO.socialProof.reviewCount / 1000).toFixed(1)}k đánh giá)</span>
             </span>
             <span className="w-px h-4 bg-neutral-200" aria-hidden="true" />
             <span>
-              <span className="font-bold text-neutral-800">500+</span> món ăn
+              <span className="font-bold text-neutral-800">{HERO.socialProof.dishCount}+</span> món ăn
             </span>
             <span className="w-px h-4 bg-neutral-200" aria-hidden="true" />
             <span>
-              <span className="font-bold text-neutral-800">10+</span> năm kinh nghiệm
+              <span className="font-bold text-neutral-800">{HERO.socialProof.yearsExperience}+</span> năm kinh nghiệm
             </span>
           </div>
         </div>
@@ -320,13 +251,13 @@ export default function CustomerHomePage() {
           {/* Section header */}
           <div className="text-center max-w-[520px]">
             <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#b45309" }}>
-              Tại sao chọn chúng tôi?
+              {FEATURES_SECTION.label}
             </p>
             <h2
               id="features-heading"
               className="font-display font-bold text-3xl sm:text-4xl text-neutral-900"
             >
-              Cam kết chất lượng mỗi ngày
+              {FEATURES_SECTION.heading}
             </h2>
           </div>
 
@@ -349,17 +280,16 @@ export default function CustomerHomePage() {
           {/* Section header */}
           <div className="text-center max-w-[520px]">
             <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#b45309" }}>
-              Thực đơn nổi bật
+              {DISHES_SECTION.label}
             </p>
             <h2
               id="dishes-heading"
               className="font-display font-bold text-3xl sm:text-4xl text-neutral-900"
             >
-              Món Ngon Nổi Bật
+              {DISHES_SECTION.heading}
             </h2>
             <p className="mt-3 text-base text-neutral-500 leading-[1.7]">
-              Những món ăn được thực khách yêu thích nhất, chế biến từ nguyên
-              liệu tươi ngon mỗi ngày.
+              {DISHES_SECTION.description}
             </p>
           </div>
 
@@ -373,7 +303,7 @@ export default function CustomerHomePage() {
           {/* Secondary CTA — view all menu */}
           <Link href="/menu" aria-label="Xem toàn bộ thực đơn">
             <Button variant="outline" size="md">
-              Xem Toàn Bộ Thực Đơn
+              {DISHES_SECTION.cta}
             </Button>
           </Link>
         </div>
@@ -408,16 +338,12 @@ export default function CustomerHomePage() {
               "text-balance",
             ].join(" ")}
           >
-            Sẵn sàng cho một bữa tối{" "}
-            <span className="text-amber-300 drop-shadow-sm">khó quên?</span>
+            {CTA_BANNER.headline.part1}{" "}
+            <span className="text-amber-300 drop-shadow-sm">{CTA_BANNER.headline.highlight}</span>
           </h2>
 
           <p className="max-w-[480px] text-base sm:text-lg text-white/90 leading-[1.7]">
-            Đặt bàn ngay hôm nay và nhận ưu đãi{" "}
-            <span className="font-semibold text-amber-300">
-              giảm 15% cho lần đầu tiên
-            </span>{" "}
-            — chỉ có tại RestoMS Long Xuyên.
+            {CTA_BANNER.description}
           </p>
 
           {/* customer.md: center, large CTA, high contrast 7:1+ */}
@@ -428,23 +354,23 @@ export default function CustomerHomePage() {
                 size="lg"
                 style={{ backgroundColor: "#ffffff", color: "#c2410c", border: "1px solid transparent" }}
               >
-                Khám Phá Menu
+                {CTA_BANNER.cta.primary}
               </Button>
             </Link>
-            <Link href="tel:+842801234567" aria-label="Gọi điện đặt bàn">
+            <Link href={CTA_BANNER.cta.phone} aria-label="Gọi điện đặt bàn">
               <Button
                 variant="ghost"
                 size="lg"
                 style={{ color: "#ffffff", border: "1px solid rgba(255,255,255,0.4)" }}
               >
-                Gọi Đặt Bàn
+                {CTA_BANNER.cta.secondary}
               </Button>
             </Link>
           </div>
 
           {/* Trust note */}
           <p className="text-sm text-white/70">
-            Không cần thẻ tín dụng · Đặt bàn miễn phí · Huỷ bất cứ lúc nào
+            {CTA_BANNER.trust}
           </p>
         </div>
       </section>
