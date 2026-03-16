@@ -1,4 +1,5 @@
 import Footer from "@/components/customer/Footer";
+import FloatingCartBar from "@/components/customer/FloatingCartBar";
 import Navbar from "@/components/customer/Navbar";
 
 /**
@@ -8,6 +9,7 @@ import Navbar from "@/components/customer/Navbar";
  *   - Sticky <Navbar /> at the top
  *   - <main> flex-grows to fill remaining height
  *   - <Footer /> pinned to bottom
+ *   - <FloatingCartBar /> overlays at bottom when cart has items
  *
  * Background follows customer.md: #f8fafc (surface-muted)
  *
@@ -31,6 +33,9 @@ export default function CustomerLayout({ children }) {
 
       {/* ── Footer ───────────────────────────────────────────────────── */}
       <Footer />
+
+      {/* ── Floating Cart Bar (renders only if cart > 0) ──────────────── */}
+      <FloatingCartBar />
     </div>
   );
 }

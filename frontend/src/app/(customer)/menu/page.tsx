@@ -1,8 +1,9 @@
 "use client";
 
+import MenuItemCard from "@/components/customer/MenuItemCard";
+import FloatingCartBar from "@/components/customer/FloatingCartBar";
 import axiosClient from "@/lib/axiosClient";
 import { AlertCircle, Search, Star, ChefHat, UtensilsCrossed, ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import "./menu.css";
 
@@ -183,63 +184,6 @@ function CategoryFilter({
         </div>
       </Container>
     </section>
-  );
-}
-
-// ── Component: Menu Item Card ──────────────────────────────────────────────────
-
-interface MenuItemCardProps {
-  item: MenuItem;
-  isFeatured?: boolean;
-}
-
-function MenuItemCard({ item, isFeatured = false }: MenuItemCardProps) {
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = "/images/placeholder-dish.svg";
-  };
-
-  return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
-      <div className="relative h-48 bg-slate-200 overflow-hidden">
-        {item.image_url ? (
-          <Image
-            src={item.image_url}
-            alt={item.name}
-            fill
-            className="object-cover"
-            onError={onImageError}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-slate-100">
-            <UtensilsCrossed size={32} className="text-slate-300" aria-hidden="true" />
-          </div>
-        )}
-        {isFeatured && (
-          <div className="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-            ⭐ Đặc biệt
-          </div>
-        )}
-      </div>
-
-      <div className="p-4">
-        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2 line-clamp-2">
-          {item.name}
-        </h3>
-
-        {item.description && (
-          <p className="text-sm text-slate-600 mb-3 line-clamp-2">{item.description}</p>
-        )}
-
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-amber-600">{formatPrice(item.price)}</span>
-          {item.area && (
-            <span className="inline-block px-2.5 py-1 text-xs font-medium bg-amber-50 text-amber-700 rounded-lg">
-              {item.area}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -480,20 +424,6 @@ function CTASection() {
   );
 }
 
-// ── Component: Footer ──────────────────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer className="bg-slate-900 text-white py-8">
-      <Container>
-        <div className="text-center text-slate-400">
-          <p>&copy; 2025 Restaurant Management System. All rights reserved.</p>
-        </div>
-      </Container>
-    </footer>
-  );
-}
-
 // ── Main Page Component ────────────────────────────────────────────────────────
 
 export default function MenuPage() {
@@ -608,8 +538,8 @@ export default function MenuPage() {
       {/* 6. CTA Section */}
       <CTASection />
 
-      {/* 7. Footer */}
-      <Footer />
+      {/* 7. Floating Cart Bar — Always available, renders only if cart has items */}
+      <FloatingCartBar />
     </div>
   );
 }
