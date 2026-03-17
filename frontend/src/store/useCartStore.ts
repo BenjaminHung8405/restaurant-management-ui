@@ -9,13 +9,13 @@ import { createJSONStorage, persist } from "zustand/middleware";
  * `menu_item_id` references the actual menu item from the database.
  */
 export interface CartItem {
-  cartItemId: string; // Unique ID for this cart line item
-  menu_item_id: string; // FK to menu_items table
+  cartItemId: string;        // Unique ID for this cart line item
+  menu_item_id: string;      // FK to menu_items table
   name: string;
-  price: number; // Unit price (VND)
+  price: number;
   image_url?: string;
-  quantity: number; // How many of this item
-  notes: string; // Special instructions (e.g., "không cay", "thêm hành")
+  quantity: number;
+  notes: string;
 }
 
 /**
