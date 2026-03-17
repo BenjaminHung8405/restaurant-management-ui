@@ -5,18 +5,44 @@ import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2, UtensilsCrossed } from "l
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axiosClient from "@/lib/axiosClient";
+
+// ── Mock table data (replace with API call if needed) ──
+const MOCK_TABLES = [
+  { id: "123e4567-e89b-12d3-a456-426614174001", name: "Bàn T01" },
+  { id: "223e4567-e89b-12d3-a456-426614174002", name: "Bàn T02" },
+  { id: "323e4567-e89b-12d3-a456-426614174003", name: "Bàn T03" },
+  { id: "423e4567-e89b-12d3-a456-426614174004", name: "Bàn VIP-01" },
+  { id: "523e4567-e89b-12d3-a456-426614174005", name: "Bàn VIP-02" },
+];
+
+interface OrderItem {
+  menu_item_id: string;
+  quantity: number;
+  unit_price: number;
+  notes?: string;
+}
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const clearCart = useCartStore((s) => s.clearCart);
+  const router = useRouter();
 
+  // Local state
+  const [mounted, setMounted] = useState(false);
+  const [selectedTable, setSelectedTable] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Computed values
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // Handle hydration mismatch from persisting store
-  const [mounted, setMounted] = useState(false);
+  // Hydration safety
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -32,13 +58,71 @@ export default function CartPage() {
     e.currentTarget.src = "/images/placeholder-dish.svg";
   };
 
-  // Prevent hydration errors by not rendering until mounted
+  const handlePlaceOrder = async () => {
+    // Validate selections
+    if (!selectedTable) {
+      setSubmitError("Vui lòng chọn bàn ăn");
+      return;
+    }
+
+    if (items.length === 0) {
+      setSubmitError("Giỏ hàng trống, vui lòng thêm món ăn");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      // Map cart items to API format
+      const orderItems: OrderItem[] = items.map((item) => ({
+        menu_item_id: item.menu_item_id,
+        quantity: item.quantity,
+        unit_price: item.price,
+        notes: item.notes || undefined,
+      }));
+
+      // Submit order to backend
+      const response = await axiosClient.post("/orders", {
+        table_id: selectedTable,
+        items: orderItems,
+      });
+
+      if (response.data?.success) {
+        setSubmitSuccess(true);
+        
+        // Clear cart after successful order
+        clearCart();
+        
+        // Show success feedback and redirect
+        setTimeout(() => {
+          router.push("/menu");
+        }, 1500);
+      } else {
+        setSubmitError(response.data?.message || "Không thể gửi đơn hàng, vui lòng thử lại");
+      }
+    } catch (error: unknown) {
+      console.error("Order submission error:", error);
+      
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        const errorMsg = axiosError.response?.data?.message || "Lỗi khi gửi đơn hàng";
+        setSubmitError(errorMsg);
+      } else {
+        setSubmitError("Lỗi kết nối, vui lòng kiểm tra kết nối mạng");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Prevent hydration errors
   if (!mounted) {
     return <div className="min-h-screen bg-neutral-50" />;
   }
 
   // ── Empty State ─────────────────────────────────────────────────────────────
-  if (items.length === 0) {
+  if (items.length === 0 && !submitSuccess) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-12">
         <div className="w-32 h-32 bg-amber-50 rounded-full flex items-center justify-center mb-8 shadow-inner">
@@ -70,6 +154,36 @@ export default function CartPage() {
     );
   }
 
+  // ── Success State ────────────────────────────────────────────────────────────
+  if (submitSuccess) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-12">
+        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-8 animate-bounce">
+          <svg
+            className="w-12 h-12 text-green-600"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 mb-3">
+          Đã gửi đơn hàng thành công!
+        </h2>
+        <p className="text-slate-600 mb-2 text-center max-w-md text-lg">
+          Bếp đã nhận được đơn hàng của bạn. Vui lòng chờ đợi món ăn.
+        </p>
+        <p className="text-sm text-slate-500 text-center mb-8">
+          Bạn sẽ được chuyển về thực đơn trong giây lát...
+        </p>
+      </div>
+    );
+  }
+
   // ── Cart Content ─────────────────────────────────────────────────────────────
   return (
     <div className="bg-neutral-50 min-h-screen">
@@ -80,13 +194,13 @@ export default function CartPage() {
           <h1 className="text-3xl sm:text-4xl font-display font-bold text-slate-900">
             Giỏ hàng của bạn
           </h1>
-          <button
-            onClick={clearCart}
-            className="text-sm font-medium text-slate-500 hover:text-red-600 hover:underline underline-offset-4 transition-colors p-2"
-            aria-label="Xóa tất cả các món trong giỏ hàng"
+          <Link
+            href="/menu"
+            className="text-sm font-medium text-slate-500 hover:text-amber-600 hover:underline underline-offset-4 transition-colors p-2"
+            aria-label="Quay lại Thực đơn"
           >
-            Xóa tất cả
-          </button>
+            Quay lại
+          </Link>
         </div>
 
         {/* 2-Column Responsive Layout */}
@@ -123,7 +237,7 @@ export default function CartPage() {
                     {item.name}
                   </h3>
                   
-                  {/* F&B Critical Feature: Custom Notes */}
+                  {/* Custom Notes */}
                   {item.notes && (
                     <div className="mt-1.5 p-2 bg-amber-50/50 rounded-lg border border-amber-100/50">
                       <p className="text-sm text-slate-500 italic flex items-start gap-1.5">
@@ -180,7 +294,7 @@ export default function CartPage() {
                 className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors group"
               >
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                Tiếp tục mua hàng
+                Tiếp tục chọn món
               </Link>
             </div>
           </div>
@@ -192,6 +306,14 @@ export default function CartPage() {
                 Tóm tắt đơn hàng
               </h2>
               
+              {/* Error message */}
+              {submitError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-700 font-medium">{submitError}</p>
+                </div>
+              )}
+              
+              {/* Order items count */}
               <div className="flex flex-col gap-4 mb-6">
                 <div className="flex justify-between items-center text-slate-600">
                   <span className="font-medium">Tổng số món</span>
@@ -199,6 +321,39 @@ export default function CartPage() {
                 </div>
               </div>
 
+              {/* Table Selection */}
+              <div className="mb-6 pb-6 border-b border-slate-100">
+                <label htmlFor="table-select" className="block text-sm font-semibold text-slate-900 mb-3">
+                  Chọn Bàn
+                </label>
+                <select
+                  id="table-select"
+                  value={selectedTable}
+                  onChange={(e) => {
+                    setSelectedTable(e.target.value);
+                    setSubmitError(null);
+                  }}
+                  className={[
+                    "w-full px-4 py-3 rounded-xl",
+                    "border-2 transition-colors duration-200",
+                    "text-slate-900 font-medium",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                    selectedTable
+                      ? "border-green-500 focus-visible:ring-green-500"
+                      : "border-slate-200 focus-visible:ring-amber-500",
+                  ].join(" ")}
+                  aria-label="Chọn bàn ăn"
+                >
+                  <option value="">-- Chọn bàn --</option>
+                  {MOCK_TABLES.map((table) => (
+                    <option key={table.id} value={table.id}>
+                      {table.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Subtotal */}
               <div className="border-t border-slate-200 border-dashed pt-5 mb-8">
                 <div className="flex justify-between items-end">
                   <span className="text-slate-900 font-bold text-lg">Tổng cộng</span>
@@ -209,22 +364,30 @@ export default function CartPage() {
                 <p className="text-xs text-slate-400 text-right mt-1">Đã bao gồm thuế (nếu có)</p>
               </div>
 
-              <Link
-                href="/checkout"
+              {/* CTA Button */}
+              <button
+                onClick={handlePlaceOrder}
+                disabled={isSubmitting || !selectedTable || items.length === 0}
                 className={[
                   "flex items-center justify-center w-full py-4 rounded-xl",
-                  "bg-green-600 hover:bg-green-700 text-white font-bold text-lg",
+                  "font-bold text-lg",
                   "shadow-lg hover:shadow-xl",
-                  "transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500",
+                  "transition-all duration-200 transform",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                  "cursor-pointer",
+                  isSubmitting || !selectedTable || items.length === 0
+                    ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                    : "bg-green-600 text-white hover:bg-green-700 active:scale-95 focus-visible:ring-green-500",
                 ].join(" ")}
+                aria-label="Gửi đơn hàng xuống bếp"
               >
-                Thanh toán ngay
-              </Link>
+                {isSubmitting ? "Đang gửi..." : "Xác nhận gọi món"}
+              </button>
 
-              {/* Trust Badge */}
+              {/* Info note */}
               <div className="mt-6 flex flex-col gap-2 items-center text-center text-xs text-slate-400">
-                <p>Thanh toán an toàn • Bữa ăn chất lượng</p>
+                <p>Chọn bàn để xác nhận đơn hàng</p>
+                <p>Bếp sẽ nhận và chuẩn bị món ăn của bạn</p>
               </div>
             </div>
           </div>
