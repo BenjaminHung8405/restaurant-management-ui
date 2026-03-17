@@ -23,6 +23,7 @@ export interface CartItem {
  */
 interface CartState {
   items: CartItem[];
+  updatedAt: number; // Timestamp (milliseconds) when cart was last modified
 
   // ── Actions ────────────────────────────────────────────
 
@@ -93,6 +94,7 @@ const useCartStore = create<CartState>()(
     (set, get) => ({
       // ── Initial state ──────────────────────────────────────────────────────
       items: [],
+      updatedAt: Date.now(),
 
       // ── Actions ────────────────────────────────────────────────────────────
 
@@ -111,7 +113,7 @@ const useCartStore = create<CartState>()(
           set((state) => {
             const updatedItems = [...state.items];
             updatedItems[existingIndex].quantity += item.quantity;
-            return { items: updatedItems };
+            return { items: updatedItems, updatedAt: Date.now() };
           });
         } else {
           // New item: generate cartItemId and push
@@ -121,6 +123,7 @@ const useCartStore = create<CartState>()(
           };
           set((state) => ({
             items: [...state.items, newCartItem],
+            updatedAt: Date.now(),
           }));
         }
       },
@@ -138,17 +141,19 @@ const useCartStore = create<CartState>()(
               ? { ...item, quantity: newQuantity }
               : item
           ),
+          updatedAt: Date.now(),
         }));
       },
 
       removeItem: (cartItemId) => {
         set((state) => ({
           items: state.items.filter((item) => item.cartItemId !== cartItemId),
+          updatedAt: Date.now(),
         }));
       },
 
       clearCart: () => {
-        set({ items: [] });
+        set({ items: [], updatedAt: Date.now() });
       },
 
       // ── Derived selectors ──────────────────────────────────────────────────
@@ -170,7 +175,8 @@ const useCartStore = create<CartState>()(
       name: "restaurant-cart-storage", // localStorage key
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        items: state.items, // Only persist items; selectors are recomputed
+        items: state.items,
+        updatedAt: state.updatedAt, // Persist timestamp for expiry check
       }),
     }
   )

@@ -8,14 +8,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosClient from "@/lib/axiosClient";
 
-// ── Mock table data (replace with API call if needed) ──
-const MOCK_TABLES = [
-  { id: "123e4567-e89b-12d3-a456-426614174001", name: "Bàn T01" },
-  { id: "223e4567-e89b-12d3-a456-426614174002", name: "Bàn T02" },
-  { id: "323e4567-e89b-12d3-a456-426614174003", name: "Bàn T03" },
-  { id: "423e4567-e89b-12d3-a456-426614174004", name: "Bàn VIP-01" },
-  { id: "523e4567-e89b-12d3-a456-426614174005", name: "Bàn VIP-02" },
-];
+// ── Types ──────────────────────────────────────────────────────────────────────
+
+interface Table {
+  id: string;
+  table_number: string;
+  capacity: number;
+  status: string;
+}
 
 interface OrderItem {
   menu_item_id: string;
@@ -23,6 +23,8 @@ interface OrderItem {
   unit_price: number;
   notes?: string;
 }
+
+// ────────────────────────────────────────────────────────────────────────────────
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -33,6 +35,8 @@ export default function CartPage() {
 
   // Local state
   const [mounted, setMounted] = useState(false);
+  const [tables, setTables] = useState<Table[]>([]);
+  const [isLoadingTables, setIsLoadingTables] = useState(true);
   const [selectedTable, setSelectedTable] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -45,6 +49,31 @@ export default function CartPage() {
   // Hydration safety
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Fetch tables from API
+  useEffect(() => {
+    const fetchTables = async () => {
+      try {
+        setIsLoadingTables(true);
+        const response = await axiosClient.get("/tables");
+
+        // Handle standard API response format: { success, data }
+        if (response.data?.success && Array.isArray(response.data?.data)) {
+          setTables(response.data.data);
+        } else {
+          console.warn("Unexpected API response format for tables:", response.data);
+          setTables([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch tables:", error);
+        setTables([]);
+      } finally {
+        setIsLoadingTables(false);
+      }
+    };
+
+    fetchTables();
   }, []);
 
   const formatPrice = (price: number): string => {
@@ -90,10 +119,10 @@ export default function CartPage() {
 
       if (response.data?.success) {
         setSubmitSuccess(true);
-        
+
         // Clear cart after successful order
         clearCart();
-        
+
         // Show success feedback and redirect
         setTimeout(() => {
           router.push("/menu");
@@ -103,7 +132,7 @@ export default function CartPage() {
       }
     } catch (error: unknown) {
       console.error("Order submission error:", error);
-      
+
       if (typeof error === "object" && error !== null && "response" in error) {
         const axiosError = error as { response?: { data?: { message?: string } } };
         const errorMsg = axiosError.response?.data?.message || "Lỗi khi gửi đơn hàng";
@@ -333,23 +362,41 @@ export default function CartPage() {
                     setSelectedTable(e.target.value);
                     setSubmitError(null);
                   }}
+                  disabled={isLoadingTables}
                   className={[
                     "w-full px-4 py-3 rounded-xl",
                     "border-2 transition-colors duration-200",
                     "text-slate-900 font-medium",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                    isLoadingTables && "opacity-50 cursor-not-allowed",
                     selectedTable
                       ? "border-green-500 focus-visible:ring-green-500"
                       : "border-slate-200 focus-visible:ring-amber-500",
                   ].join(" ")}
                   aria-label="Chọn bàn ăn"
                 >
-                  <option value="">-- Chọn bàn --</option>
-                  {MOCK_TABLES.map((table) => (
-                    <option key={table.id} value={table.id}>
-                      {table.name}
-                    </option>
-                  ))}
+                  <option value="">
+                    {isLoadingTables ? "Đang tải danh sách bàn..." : "-- Chọn bàn --"}
+                  </option>
+
+                  {!isLoadingTables &&
+                    tables.map((table) => {
+                      const isAvailable = table.status === "available";
+                      const optionText = `${table.table_number} (Sức chứa: ${table.capacity} người)${
+                        !isAvailable ? " - Đã có khách" : ""
+                      }`;
+
+                      return (
+                        <option
+                          key={table.id}
+                          value={table.id}
+                          disabled={!isAvailable}
+                          className={!isAvailable ? "opacity-50" : ""}
+                        >
+                          {optionText}
+                        </option>
+                      );
+                    })}
                 </select>
               </div>
 
@@ -367,7 +414,7 @@ export default function CartPage() {
               {/* CTA Button */}
               <button
                 onClick={handlePlaceOrder}
-                disabled={isSubmitting || !selectedTable || items.length === 0}
+                disabled={isSubmitting || !selectedTable || items.length === 0 || isLoadingTables}
                 className={[
                   "flex items-center justify-center w-full py-4 rounded-xl",
                   "font-bold text-lg",
@@ -375,7 +422,7 @@ export default function CartPage() {
                   "transition-all duration-200 transform",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   "cursor-pointer",
-                  isSubmitting || !selectedTable || items.length === 0
+                  isSubmitting || !selectedTable || items.length === 0 || isLoadingTables
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                     : "bg-green-600 text-white hover:bg-green-700 active:scale-95 focus-visible:ring-green-500",
                 ].join(" ")}

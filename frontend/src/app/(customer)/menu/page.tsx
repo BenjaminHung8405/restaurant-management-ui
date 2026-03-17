@@ -69,7 +69,7 @@ function HeroSection({ categoriesLoading }: HeroSectionProps) {
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
             <UtensilsCrossed size={32} className="text-amber-500" aria-hidden="true" />
-            <h1 className="text-3xl sm:text-4xl font-bold">Thực Đơn Nhà Hàng</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Thực Đơn Nhà Hàng</h1>
           </div>
           <p className="text-lg text-slate-600 max-w-2xl">
             Khám phá bộ sưu tập các món ăn ngon lành được chuẩn bị tươi mới hàng ngày từ bếp
@@ -89,7 +89,7 @@ function HeroSection({ categoriesLoading }: HeroSectionProps) {
             <ChefHat size={20} className="text-amber-500 flex-shrink-0 mt-1" aria-hidden="true" />
             <div>
               <p className="font-semibold text-slate-900">Bếp Trưởng Gợi Ý</p>
-              <p className="text-sm text-slate-600">Những món đặc biệt được bếp chọn lọc</p>
+              <p className="text-sm text-slate-600">Những món ăn được thực khách yêu thích nhất</p>
             </div>
           </div>
           <div className="flex gap-3">
@@ -138,7 +138,7 @@ function SearchBar({ value, onChange, isLoading }: SearchBarProps) {
 interface CategoryFilterProps {
   categories: Category[];
   selectedCategory: string;
-  onSelectCategory: (categoryId: string) => void;
+  onSelectCategory: (id: string) => void;
   isLoading: boolean;
 }
 
@@ -149,36 +149,32 @@ function CategoryFilter({
   isLoading,
 }: CategoryFilterProps) {
   return (
-    <section className="bg-white border-b border-slate-100">
-      <Container className="py-6">
-        <p className="text-sm text-slate-600 mb-4 font-medium">Lọc theo loại món:</p>
-        <div className="flex flex-wrap gap-3">
+    <section className="bg-white border-b border-slate-100 sticky top-16 z-40">
+      <Container className="py-4">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           <button
             onClick={() => onSelectCategory(CATEGORY_ALL)}
             disabled={isLoading}
-            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer ${
+            className={`px-6 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
               selectedCategory === CATEGORY_ALL
-                ? "bg-amber-500 text-white hover:bg-amber-600"
+                ? "bg-amber-500 text-white"
                 : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-            type="button"
+            } disabled:opacity-50`}
           >
-            Tất cả
+            Tất Cả
           </button>
-
-          {categories.map((category) => (
+          {categories.map((cat) => (
             <button
-              key={category.id}
-              onClick={() => onSelectCategory(category.id)}
+              key={cat.id}
+              onClick={() => onSelectCategory(cat.id)}
               disabled={isLoading}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 cursor-pointer ${
-                selectedCategory === category.id
-                  ? "bg-amber-500 text-white hover:bg-amber-600"
+              className={`px-6 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
+                selectedCategory === cat.id
+                  ? "bg-amber-500 text-white"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-              type="button"
+              } disabled:opacity-50`}
             >
-              {category.name}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -196,30 +192,6 @@ interface FeaturedCarouselProps {
 
 function FeaturedCarousel({ items, isLoading }: FeaturedCarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  // Check scroll position to show/hide arrows
-  const checkScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
-
-  useEffect(() => {
-    checkScroll();
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", checkScroll);
-      window.addEventListener("resize", checkScroll);
-      return () => {
-        container.removeEventListener("scroll", checkScroll);
-        window.removeEventListener("resize", checkScroll);
-      };
-    }
-  }, [items]);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -242,7 +214,7 @@ function FeaturedCarousel({ items, isLoading }: FeaturedCarouselProps) {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="w-[85vw] sm:w-[320px] flex-shrink-0 rounded-lg bg-slate-200 animate-pulse h-72"
+              className="w-[85vw] sm:w-[320px] flex-shrink-0 h-80 bg-slate-200 rounded-2xl animate-pulse"
             />
           ))}
         </div>
@@ -255,39 +227,26 @@ function FeaturedCarousel({ items, isLoading }: FeaturedCarouselProps) {
   }
 
   return (
-    <div className="mb-12">
-      {/* Header with title and navigation arrows */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
           <ChefHat size={24} className="text-amber-500" aria-hidden="true" />
           Bếp Trưởng Gợi Ý
         </h2>
-
-        {/* Navigation arrows — visible on desktop, hidden on mobile */}
-        <div className="hidden sm:flex gap-2">
+        <div className="flex gap-2">
           <button
             onClick={() => scroll("left")}
-            disabled={!canScrollLeft}
-            aria-label="Cuộn sang trái"
-            className={`p-2 rounded-full transition-all duration-200 ${
-              canScrollLeft
-                ? "bg-amber-500 text-white hover:bg-amber-600 cursor-pointer"
-                : "bg-slate-100 text-slate-300 cursor-not-allowed"
-            }`}
+            className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+            aria-label="Cuộn trái"
           >
-            <ChevronLeft size={20} strokeWidth={2} aria-hidden="true" />
+            <ChevronLeft size={20} />
           </button>
           <button
             onClick={() => scroll("right")}
-            disabled={!canScrollRight}
-            aria-label="Cuộn sang phải"
-            className={`p-2 rounded-full transition-all duration-200 ${
-              canScrollRight
-                ? "bg-amber-500 text-white hover:bg-amber-600 cursor-pointer"
-                : "bg-slate-100 text-slate-300 cursor-not-allowed"
-            }`}
+            className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+            aria-label="Cuộn phải"
           >
-            <ChevronRight size={20} strokeWidth={2} aria-hidden="true" />
+            <ChevronRight size={20} />
           </button>
         </div>
       </div>
@@ -327,11 +286,11 @@ function MenuGrid({
 }: MenuGridProps) {
   if (isLoading) {
     return (
-      <section className="bg-white py-8 sm:py-12">
+      <section className="py-12 bg-white">
         <Container>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-lg overflow-hidden bg-slate-200 animate-pulse h-64" />
+              <div key={i} className="h-96 bg-slate-200 rounded-2xl animate-pulse" />
             ))}
           </div>
         </Container>
@@ -341,18 +300,10 @@ function MenuGrid({
 
   if (items.length === 0) {
     return (
-      <section className="bg-white py-12 sm:py-16">
+      <section className="py-12 bg-white">
         <Container>
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="mb-4 p-3 bg-slate-100 rounded-full">
-              <AlertCircle size={32} className="text-slate-400" aria-hidden="true" />
-            </div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">
-              Không tìm thấy món ăn
-            </h3>
-            <p className="text-slate-600">
-              Xin lỗi, không có sản phẩm nào phù hợp với tiêu chí tìm kiếm của bạn.
-            </p>
+          <div className="text-center">
+            <p className="text-lg text-slate-600">Không tìm thấy món ăn nào</p>
           </div>
         </Container>
       </section>
@@ -360,10 +311,10 @@ function MenuGrid({
   }
 
   return (
-    <section className="bg-white py-8 sm:py-12">
+    <section className="py-12 bg-white">
       <Container>
-        {/* Grouped View: Show category sections when "All" is selected */}
         {selectedCategory === CATEGORY_ALL ? (
+          /* Grouped view — show categories with headers */
           <div>
             {categories.map((category) => {
               const itemsInCategory = items.filter(
@@ -415,9 +366,6 @@ function CTASection() {
           <p className="text-lg text-slate-600 mb-6">
             Khám phá toàn bộ thực đơn và đặt món ăn yêu thích của bạn ngay hôm nay.
           </p>
-          <button className="bg-amber-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-colors duration-200">
-            Xem Thêm
-          </button>
         </div>
       </Container>
     </section>
@@ -527,7 +475,7 @@ export default function MenuPage() {
         </Container>
       </section>
 
-      {/* 5. Main Menu Grid (Grouped or Single Category) */}
+      {/* 5. Menu Grid */}
       <MenuGrid
         items={filteredItems}
         isLoading={isLoading}
@@ -538,7 +486,7 @@ export default function MenuPage() {
       {/* 6. CTA Section */}
       <CTASection />
 
-      {/* 7. Floating Cart Bar — Always available, renders only if cart has items */}
+      {/* Floating Cart Bar */}
       <FloatingCartBar />
     </div>
   );
