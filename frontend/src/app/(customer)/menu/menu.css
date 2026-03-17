@@ -1,3 +1,4 @@
+/* REMOVED: All typography and fonts managed in app/globals.css and app/layout.tsx */
 /* Design System Color Palette */
 :root {
   --color-primary: #1e40af;
@@ -23,48 +24,6 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* ── Typography — use global font-sans (Inter) ── */
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
-  color: var(--color-text);
-  background: white;
-  margin: 0;
-  padding: 0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Playfair Display", Georgia, serif;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--color-text);
-}
-
-h1 {
-  font-size: 2.25rem;
-}
-
-h2 {
-  font-size: 1.875rem;
-}
-
-h3 {
-  font-size: 1.5rem;
-}
-
-p {
-  line-height: 1.6;
-  font-weight: 400;
 }
 
 /* Design System Button Styles */

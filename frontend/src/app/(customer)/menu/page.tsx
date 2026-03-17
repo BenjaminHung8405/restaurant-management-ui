@@ -3,7 +3,15 @@
 import MenuItemCard from "@/components/customer/MenuItemCard";
 import FloatingCartBar from "@/components/customer/FloatingCartBar";
 import axiosClient from "@/lib/axiosClient";
-import { AlertCircle, Search, Star, ChefHat, UtensilsCrossed, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  AlertCircle,
+  Search,
+  Star,
+  ChefHat,
+  UtensilsCrossed,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import "./menu.css";
 
@@ -45,7 +53,13 @@ function formatPrice(price: number): string {
   }).format(price);
 }
 
-function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Container({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
       style={{ maxWidth: MAX_WIDTH }}
@@ -68,35 +82,61 @@ function HeroSection({ categoriesLoading }: HeroSectionProps) {
       <Container>
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <UtensilsCrossed size={32} className="text-amber-500" aria-hidden="true" />
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Thực Đơn Nhà Hàng</h1>
+            <UtensilsCrossed
+              size={32}
+              className="text-amber-500"
+              aria-hidden="true"
+            />
+            {/* h1 automatically uses font-display from globals.css */}
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
+              Thực Đơn Nhà Hàng
+            </h1>
           </div>
           <p className="text-lg text-slate-600 max-w-2xl">
-            Khám phá bộ sưu tập các món ăn ngon lành được chuẩn bị tươi mới hàng ngày từ bếp
-            của chúng tôi. Mỗi món ăn được chế biến cẩn thận với yêu thương.
+            Khám phá bộ sưu tập các món ăn ngon lành được chuẩn bị tươi mới hàng
+            ngày từ bếp của chúng tôi. Mỗi món ăn được chế biến cẩn thận với
+            yêu thương.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="flex gap-3">
-            <Star size={20} className="text-amber-500 flex-shrink-0 mt-1" aria-hidden="true" />
+            <Star
+              size={20}
+              className="text-amber-500 flex-shrink-0 mt-1"
+              aria-hidden="true"
+            />
             <div>
               <p className="font-semibold text-slate-900">Tươi & Chất Lượng</p>
-              <p className="text-sm text-slate-600">Nguyên liệu tốt nhất, chế biến cẩn thận</p>
+              <p className="text-sm text-slate-600">
+                Nguyên liệu tốt nhất, chế biến cẩn thận
+              </p>
             </div>
           </div>
           <div className="flex gap-3">
-            <ChefHat size={20} className="text-amber-500 flex-shrink-0 mt-1" aria-hidden="true" />
+            <ChefHat
+              size={20}
+              className="text-amber-500 flex-shrink-0 mt-1"
+              aria-hidden="true"
+            />
             <div>
               <p className="font-semibold text-slate-900">Bếp Trưởng Gợi Ý</p>
-              <p className="text-sm text-slate-600">Những món ăn được thực khách yêu thích nhất</p>
+              <p className="text-sm text-slate-600">
+                Những món ăn được thực khách yêu thích nhất
+              </p>
             </div>
           </div>
           <div className="flex gap-3">
-            <AlertCircle size={20} className="text-amber-500 flex-shrink-0 mt-1" aria-hidden="true" />
+            <AlertCircle
+              size={20}
+              className="text-amber-500 flex-shrink-0 mt-1"
+              aria-hidden="true"
+            />
             <div>
               <p className="font-semibold text-slate-900">Giá Công Khai</p>
-              <p className="text-sm text-slate-600">Không ẩn giấu, thông tin rõ ràng</p>
+              <p className="text-sm text-slate-600">
+                Không ẩn giấu, thông tin rõ ràng
+              </p>
             </div>
           </div>
         </div>
@@ -118,7 +158,11 @@ function SearchBar({ value, onChange, isLoading }: SearchBarProps) {
     <section className="bg-white border-b border-slate-100">
       <Container className="py-6">
         <div className="relative">
-          <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" aria-hidden="true" />
+          <Search
+            size={20}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"
+            aria-hidden="true"
+          />
           <input
             type="text"
             placeholder="Tìm kiếm món ăn..."
@@ -207,7 +251,11 @@ function FeaturedCarousel({ items, isLoading }: FeaturedCarouselProps) {
     return (
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <ChefHat size={24} className="text-amber-500" aria-hidden="true" />
+          <ChefHat
+            size={24}
+            className="text-amber-500"
+            aria-hidden="true"
+          />
           Bếp Trưởng Gợi Ý
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-4">
@@ -230,7 +278,11 @@ function FeaturedCarousel({ items, isLoading }: FeaturedCarouselProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <ChefHat size={24} className="text-amber-500" aria-hidden="true" />
+          <ChefHat
+            size={24}
+            className="text-amber-500"
+            aria-hidden="true"
+          />
           Bếp Trưởng Gợi Ý
         </h2>
         <div className="flex gap-2">
@@ -290,7 +342,10 @@ function MenuGrid({
         <Container>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-96 bg-slate-200 rounded-2xl animate-pulse" />
+              <div
+                key={i}
+                className="h-96 bg-slate-200 rounded-2xl animate-pulse"
+              />
             ))}
           </div>
         </Container>
@@ -325,6 +380,7 @@ function MenuGrid({
 
               return (
                 <div key={category.id} className="mb-12">
+                  {/* h2 automatically uses font-display from globals.css */}
                   <h2 className="text-2xl font-bold text-slate-900 mt-10 mb-6 pb-2 border-b-2 border-amber-200">
                     {category.name}
                   </h2>
@@ -338,10 +394,12 @@ function MenuGrid({
             })}
           </div>
         ) : (
-          /* Single Category View: No grouping headers, just the grid */
+          /* Single Category View */
           <div>
+            {/* h2 automatically uses font-display from globals.css */}
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              {categories.find((c) => c.id === selectedCategory)?.name || "Tất Cả Món Ăn"}
+              {categories.find((c) => c.id === selectedCategory)?.name ||
+                "Tất Cả Món Ăn"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {items.map((item) => (
@@ -355,16 +413,20 @@ function MenuGrid({
   );
 }
 
-// ── Component: CTA Section ────────────────────────────────────────────────────
+// ── Component: CTA Section ────────────────────────────────────────────────
 
 function CTASection() {
   return (
     <section className="bg-amber-50 py-12 sm:py-16">
       <Container>
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Sẵn sàng đặt hàng?</h2>
+          {/* h2 automatically uses font-display from globals.css */}
+          <h2 className="text-3xl font-bold text-slate-900 mb-4">
+            Sẵn sàng đặt hàng?
+          </h2>
           <p className="text-lg text-slate-600 mb-6">
-            Khám phá toàn bộ thực đơn và đặt món ăn yêu thích của bạn ngay hôm nay.
+            Khám phá toàn bộ thực đơn và đặt món ăn yêu thích của bạn ngay hôm
+            nay.
           </p>
         </div>
       </Container>
@@ -381,8 +443,6 @@ export default function MenuPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORY_ALL);
-
-  // ── Fetch categories on mount ──────────────────────────────────────────────
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -401,12 +461,12 @@ export default function MenuPage() {
     fetchCategories();
   }, []);
 
-  // ── Fetch featured items on mount ──────────────────────────────────────────
-
   useEffect(() => {
     const fetchFeaturedItems = async () => {
       try {
-        const response: any = await axiosClient.get("/menu-items?isFeatured=true");
+        const response: any = await axiosClient.get(
+          "/menu-items?isFeatured=true"
+        );
         setFeaturedItems(response?.data || []);
       } catch (error) {
         console.error("Failed to fetch featured items:", error);
@@ -416,8 +476,6 @@ export default function MenuPage() {
 
     fetchFeaturedItems();
   }, []);
-
-  // ── Fetch menu items when selectedCategory changes ────────────────────────
 
   useEffect(() => {
     const fetchMenuItems = async () => {
@@ -442,8 +500,6 @@ export default function MenuPage() {
     fetchMenuItems();
   }, [selectedCategory]);
 
-  // ── Filter menu items based on search query ────────────────────────────────
-
   const filteredItems = menuItems.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -454,13 +510,12 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 1. Hero Headline */}
       <HeroSection categoriesLoading={isLoading} />
-
-      {/* 2. Search Bar */}
-      <SearchBar value={searchQuery} onChange={setSearchQuery} isLoading={isLoading} />
-
-      {/* 3. Category Filter */}
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        isLoading={isLoading}
+      />
       <CategoryFilter
         categories={categories}
         selectedCategory={selectedCategory}
@@ -468,14 +523,12 @@ export default function MenuPage() {
         isLoading={isLoading}
       />
 
-      {/* 4. Featured Items Carousel */}
       <section className="bg-white py-8 sm:py-12">
         <Container>
           <FeaturedCarousel items={filteredFeatured} isLoading={isLoading} />
         </Container>
       </section>
 
-      {/* 5. Menu Grid */}
       <MenuGrid
         items={filteredItems}
         isLoading={isLoading}
@@ -483,10 +536,8 @@ export default function MenuPage() {
         categories={categories}
       />
 
-      {/* 6. CTA Section */}
       <CTASection />
 
-      {/* Floating Cart Bar */}
       <FloatingCartBar />
     </div>
   );

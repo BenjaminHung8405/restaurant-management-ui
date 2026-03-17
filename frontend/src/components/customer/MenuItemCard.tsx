@@ -21,7 +21,10 @@ interface MenuItemCardProps {
   isFeatured?: boolean;
 }
 
-export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardProps) {
+export default function MenuItemCard({
+  item,
+  isFeatured = false,
+}: MenuItemCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasRecentlyAdded, setHasRecentlyAdded] = useState(false);
 
@@ -36,7 +39,6 @@ export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardP
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    // Show brief success feedback
     setHasRecentlyAdded(true);
     setTimeout(() => setHasRecentlyAdded(false), 2000);
   };
@@ -63,7 +65,11 @@ export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardP
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-slate-100">
-              <UtensilsCrossed size={32} className="text-slate-300" aria-hidden="true" />
+              <UtensilsCrossed
+                size={32}
+                className="text-slate-300"
+                aria-hidden="true"
+              />
             </div>
           )}
 
@@ -77,7 +83,7 @@ export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardP
           {/* Dark Overlay on Hover */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
 
-          {/* Floating Add Button — Circular, visible on hover */}
+          {/* Floating Add Button */}
           <button
             onClick={handleOpenModal}
             aria-label={`Tùy chỉnh và thêm ${item.name} vào giỏ hàng`}
@@ -88,24 +94,33 @@ export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardP
               "transition-all duration-200 transform",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-amber-500",
               "cursor-pointer",
-              // State-based styling
               hasRecentlyAdded
                 ? "bg-green-500 hover:bg-green-600 shadow-2xl scale-110"
                 : "bg-amber-500 hover:bg-amber-600 shadow-xl group-hover:scale-125",
-              // Show/hide logic
               "opacity-0 group-hover:opacity-100",
             ].join(" ")}
           >
             {hasRecentlyAdded ? (
-              <ShoppingCart size={24} className="text-white" strokeWidth={2.5} aria-hidden="true" />
+              <ShoppingCart
+                size={24}
+                className="text-white"
+                strokeWidth={2.5}
+                aria-hidden="true"
+              />
             ) : (
-              <Plus size={28} className="text-white" strokeWidth={3} aria-hidden="true" />
+              <Plus
+                size={28}
+                className="text-white"
+                strokeWidth={3}
+                aria-hidden="true"
+              />
             )}
           </button>
         </div>
 
         {/* Content Container */}
         <div className="p-5 flex flex-col flex-grow">
+          {/* h3 automatically uses font-display from globals.css */}
           <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2">
             {item.name}
           </h3>
@@ -128,7 +143,7 @@ export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardP
             )}
           </div>
 
-          {/* Bottom CTA Button — Full width, always visible */}
+          {/* Bottom CTA Button */}
           <button
             onClick={handleOpenModal}
             className={[
@@ -144,7 +159,12 @@ export default function MenuItemCard({ item, isFeatured = false }: MenuItemCardP
           >
             {hasRecentlyAdded ? (
               <>
-                <ShoppingCart size={20} className="animate-bounce" strokeWidth={2.5} aria-hidden="true" />
+                <ShoppingCart
+                  size={20}
+                  className="animate-bounce"
+                  strokeWidth={2.5}
+                  aria-hidden="true"
+                />
                 <span>Đã thêm vào giỏ</span>
               </>
             ) : (

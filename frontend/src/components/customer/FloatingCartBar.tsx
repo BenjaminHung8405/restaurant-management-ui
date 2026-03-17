@@ -16,10 +16,13 @@ export default function FloatingCartBar() {
     setMounted(true);
   }, []);
 
-  // Only render if cart has items and after hydration
-  if (!mounted || totalItems === 0) {
+  // Only render if cart has items
+  if (totalItems === 0) {
     return null;
   }
+
+  // Note: We render even if !mounted to avoid hydration mismatch
+  // The component will hydrate correctly once mounted
 
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat("vi-VN", {
@@ -30,6 +33,7 @@ export default function FloatingCartBar() {
 
   return (
     <div
+      suppressHydrationWarning
       className={[
         "fixed bottom-4 inset-x-4 md:inset-x-auto md:w-[420px] md:right-8",
         "z-50",

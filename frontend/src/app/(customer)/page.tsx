@@ -40,7 +40,8 @@ function FeatureCard({ item }: { item: FeatureItem }) {
       <h3 className="mb-2 text-lg font-semibold text-neutral-900 font-display">
         {title}
       </h3>
-      <p className="text-sm leading-[1.7] text-neutral-500">{description}</p>
+
+      <p className="text-sm leading-[1.6] text-neutral-600">{description}</p>
     </div>
   );
 }
@@ -68,7 +69,7 @@ function DishCard({ dish }: { dish: DishPreview }) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
         />
-        
+
         {/* Dark Overlay on Hover */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
 
@@ -93,25 +94,31 @@ function DishCard({ dish }: { dish: DishPreview }) {
         <h3 className="text-xl font-bold text-neutral-900 font-display line-clamp-1 group-hover:text-amber-600 transition-colors duration-200">
           {name}
         </h3>
-        <p className="text-sm leading-relaxed text-neutral-500 line-clamp-2 flex-1">
-          {description}
-        </p>
+
+        {description && (
+          <p className="text-sm leading-[1.6] text-neutral-600 line-clamp-2 flex-grow">
+            {description}
+          </p>
+        )}
 
         {/* Price + CTA row */}
-        <div className="flex items-center justify-between pt-4 mt-auto border-t border-neutral-50">
-          <span className="text-xl font-extrabold text-amber-600">
-            {price}
+        <div className="flex items-center justify-between pt-4 mt-auto border-t border-neutral-100">
+          <span className="text-lg font-bold text-amber-600">
+            {price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
           </span>
-          <Link
-            href="/menu"
-            className={[
-              "flex items-center gap-1.5 text-sm font-bold",
-              "text-neutral-500 hover:text-amber-600",
-              "transition-colors duration-200",
-            ].join(" ")}
-            aria-label={`Xem chi tiết ${name}`}
-          >
-            Xem <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
+          <Link href="/menu" aria-label={`Xem chi tiết ${name}`}>
+            <button
+              className={[
+                "px-4 py-2 rounded-lg",
+                "bg-amber-500 text-white font-semibold text-sm",
+                "hover:bg-amber-600 hover:-translate-y-px",
+                "shadow-sm hover:shadow-md",
+                "transition-all duration-200",
+                "cursor-pointer",
+              ].join(" ")}
+            >
+              Xem
+            </button>
           </Link>
         </div>
       </div>
@@ -133,35 +140,32 @@ export default async function CustomerHomePage() {
   let featuredDishes: DishPreview[] = [];
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"}/menu-items?isFeatured=true`, {
-      next: { revalidate: 60 },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"}/menu-items?isFeatured=true`,
+      { next: { revalidate: 60 } }
+    );
     const json = await res.json();
-    
+
     if (json?.data && Array.isArray(json.data)) {
       featuredDishes = json.data.slice(0, 3).map((item: any) => ({
         id: item.id,
         name: item.name,
         description: item.description,
-        price: new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(item.price),
-        imageUrl: item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80",
+        price: item.price,
+        imageUrl: item.image_url || "/images/placeholder-dish.svg",
         imageAlt: item.name,
         badge: "Đặc biệt",
       }));
     }
   } catch (error) {
     console.error("Failed to fetch featured dishes:", error);
-    // Ignore fallback to empty array
   }
 
   return (
-    <div className="flex flex-col">
-
-      {/* ══ 1. HERO ════════════════════════════════════════════════════════ */}
+    <div className="bg-white">
+      {/* ══ 1. HERO ═══════════════════════════════════════════════════════════ */}
       <section
+        suppressHydrationWarning
         className={[
           "relative flex items-center justify-center",
           "min-h-[90dvh]",
@@ -185,7 +189,6 @@ export default async function CustomerHomePage() {
 
         {/* Content — customer.md: single column, centered, max-w 800px */}
         <div className="relative z-10 max-w-[900px] mx-auto text-center flex flex-col items-center gap-8">
-
           {/* Eyebrow label */}
           <span
             className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold shadow-sm"
@@ -246,34 +249,31 @@ export default async function CustomerHomePage() {
               </Button>
             </Link>
             <Link href="#reservation" aria-label="Đặt bàn tại nhà hàng">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-4 border-2 border-amber-500 text-amber-600 hover:bg-amber-50 rounded-xl transition-all">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto text-lg px-8 py-4 border-2 border-amber-500 text-amber-600 hover:bg-amber-50 rounded-xl transition-all"
+              >
                 {HERO.cta.secondary}
               </Button>
             </Link>
           </div>
 
-          {/* Social proof micro-strip */}
-          <div className="flex flex-wrap justify-center items-center gap-y-3 gap-x-6 mt-6 px-8 py-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-neutral-100 shadow-sm text-sm sm:text-base text-neutral-600 font-semibold">
-            <span className="flex items-center gap-1.5">
-              <span className="font-bold text-neutral-800">{HERO.socialProof.rating}</span>
-              <span className="flex">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    size={13}
-                    className="fill-amber-400 text-amber-400"
-                    aria-hidden="true"
-                  />
-                ))}
+          {/* Social proof — customer.md: low density, trust signals */}
+          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 pt-8">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">⭐</span>
+              <span className="text-neutral-700">
+                <span className="font-bold text-neutral-900">{HERO.socialProof.rating}</span>/5.0 từ{" "}
+                <span className="font-bold text-neutral-900">{HERO.socialProof.reviewCount}+</span> đánh giá
               </span>
-              <span>({(HERO.socialProof.reviewCount / 1000).toFixed(1)}k đánh giá)</span>
+            </div>
+            <div className="h-1 w-1 rounded-full bg-neutral-300 hidden sm:block" />
+            <span className="text-neutral-700">
+              <span className="font-bold text-neutral-900">{HERO.socialProof.dishCount}+</span> món ăn
             </span>
-            <span className="w-px h-4 bg-neutral-200" aria-hidden="true" />
-            <span>
-              <span className="font-bold text-neutral-800">{HERO.socialProof.dishCount}+</span> món ăn
-            </span>
-            <span className="w-px h-4 bg-neutral-200" aria-hidden="true" />
-            <span>
+            <div className="h-1 w-1 rounded-full bg-neutral-300 hidden sm:block" />
+            <span className="text-neutral-700">
               <span className="font-bold text-neutral-800">{HERO.socialProof.yearsExperience}+</span> năm kinh nghiệm
             </span>
           </div>
@@ -286,7 +286,6 @@ export default async function CustomerHomePage() {
         aria-labelledby="features-heading"
       >
         <div className="max-w-[1280px] mx-auto flex flex-col items-center gap-12">
-
           {/* Section header */}
           <div className="text-center max-w-[520px]">
             <p className="text-sm font-semibold uppercase tracking-widest mb-2" style={{ color: "#b45309" }}>
@@ -315,7 +314,6 @@ export default async function CustomerHomePage() {
         aria-labelledby="dishes-heading"
       >
         <div className="max-w-[1280px] mx-auto flex flex-col items-center gap-14">
-
           {/* Section header */}
           <div className="text-center max-w-[600px]">
             <p className="text-sm font-bold uppercase tracking-widest mb-3 text-amber-600">
@@ -350,14 +348,19 @@ export default async function CustomerHomePage() {
 
       {/* ══ 4. CTA BANNER ═════════════════════════════════════════════════ */}
       <section
-        className="relative overflow-hidden py-20 px-4 sm:px-8"
-        style={{
-          background: "linear-gradient(135deg, #7c2d12 0%, #9a3412 50%, #7c2d12 100%)",
-        }}
-        aria-labelledby="cta-heading"
+        suppressHydrationWarning
+        className={[
+          "relative flex items-center justify-center",
+          "min-h-[60dvh]",
+          "px-4 sm:px-8",
+          "py-20 sm:py-24",
+          "overflow-hidden",
+          "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
+        ].join(" ")}
         id="reservation"
+        aria-labelledby="cta-heading"
       >
-        {/* Decorative rings */}
+        {/* Background blobs */}
         <div
           className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/5 pointer-events-none"
           aria-hidden="true"
@@ -408,12 +411,9 @@ export default async function CustomerHomePage() {
           </div>
 
           {/* Trust note */}
-          <p className="text-sm text-white/70">
-            {CTA_BANNER.trust}
-          </p>
+          <p className="text-sm text-white/70">{CTA_BANNER.trust}</p>
         </div>
       </section>
-
     </div>
   );
 }

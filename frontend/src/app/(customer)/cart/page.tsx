@@ -1,7 +1,14 @@
 "use client";
 
 import useCartStore from "@/store/useCartStore";
-import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2, UtensilsCrossed } from "lucide-react";
+import {
+  ArrowLeft,
+  Minus,
+  Plus,
+  ShoppingCart,
+  Trash2,
+  UtensilsCrossed,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -44,7 +51,10 @@ export default function CartPage() {
 
   // Computed values
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   // Hydration safety
   useEffect(() => {
@@ -128,14 +138,19 @@ export default function CartPage() {
           router.push("/menu");
         }, 1500);
       } else {
-        setSubmitError(response.data?.message || "Không thể gửi đơn hàng, vui lòng thử lại");
+        setSubmitError(
+          response.data?.message || "Không thể gửi đơn hàng, vui lòng thử lại"
+        );
       }
     } catch (error: unknown) {
       console.error("Order submission error:", error);
 
       if (typeof error === "object" && error !== null && "response" in error) {
-        const axiosError = error as { response?: { data?: { message?: string } } };
-        const errorMsg = axiosError.response?.data?.message || "Lỗi khi gửi đơn hàng";
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        const errorMsg =
+          axiosError.response?.data?.message || "Lỗi khi gửi đơn hàng";
         setSubmitError(errorMsg);
       } else {
         setSubmitError("Lỗi kết nối, vui lòng kiểm tra kết nối mạng");
@@ -155,13 +170,20 @@ export default function CartPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-12">
         <div className="w-32 h-32 bg-amber-50 rounded-full flex items-center justify-center mb-8 shadow-inner">
-          <ShoppingCart size={56} className="text-amber-500" strokeWidth={1.5} aria-hidden="true" />
+          <ShoppingCart
+            size={56}
+            className="text-amber-500"
+            strokeWidth={1.5}
+            aria-hidden="true"
+          />
         </div>
-        <h2 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 mb-3">
+        {/* h2 automatically uses font-display from globals.css */}
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
           Giỏ hàng của bạn đang trống
         </h2>
         <p className="text-slate-500 mb-8 text-center max-w-md text-lg">
-          Chưa có món ăn nào trong giỏ hàng. Hãy khám phá thực đơn và chọn những món ăn tuyệt vời nhất nhé!
+          Chưa có món ăn nào trong giỏ hàng. Hãy khám phá thực đơn và chọn những
+          món ăn tuyệt vời nhất nhé!
         </p>
         <Link
           href="/menu"
@@ -200,7 +222,8 @@ export default function CartPage() {
             <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 mb-3">
+        {/* h2 automatically uses font-display from globals.css */}
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
           Đã gửi đơn hàng thành công!
         </h2>
         <p className="text-slate-600 mb-2 text-center max-w-md text-lg">
@@ -217,10 +240,10 @@ export default function CartPage() {
   return (
     <div className="bg-neutral-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-8 lg:py-12">
-        
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl sm:text-4xl font-display font-bold text-slate-900">
+          {/* h1 automatically uses font-display from globals.css */}
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
             Giỏ hàng của bạn
           </h1>
           <Link
@@ -234,7 +257,6 @@ export default function CartPage() {
 
         {/* 2-Column Responsive Layout */}
         <div className="lg:grid lg:grid-cols-12 lg:gap-10 flex flex-col gap-8 relative">
-          
           {/* ── Left Column: Cart Items List ── */}
           <div className="lg:col-span-8 flex flex-col gap-4">
             {items.map((item) => (
@@ -262,20 +284,23 @@ export default function CartPage() {
 
                 {/* Product Details */}
                 <div className="flex-1 min-w-0 w-full">
+                  {/* h3 automatically uses font-display from globals.css */}
                   <h3 className="text-xl sm:text-lg font-bold text-slate-900 line-clamp-2">
                     {item.name}
                   </h3>
-                  
+
                   {/* Custom Notes */}
                   {item.notes && (
                     <div className="mt-1.5 p-2 bg-amber-50/50 rounded-lg border border-amber-100/50">
                       <p className="text-sm text-slate-500 italic flex items-start gap-1.5">
-                        <span className="font-semibold text-amber-700/70 not-italic">Ghi chú:</span>
+                        <span className="font-semibold text-amber-700/70 not-italic">
+                          Ghi chú:
+                        </span>
                         <span className="line-clamp-2">{item.notes}</span>
                       </p>
                     </div>
                   )}
-                  
+
                   <div className="text-amber-600 font-extrabold mt-3 sm:mt-2 text-lg">
                     {formatPrice(item.price)}
                   </div>
@@ -283,11 +308,12 @@ export default function CartPage() {
 
                 {/* Controls */}
                 <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto mt-2 sm:mt-0 pt-4 sm:pt-0 border-t border-slate-100 sm:border-none">
-                  
                   {/* Quantity Adjuster */}
                   <div className="flex items-center bg-slate-50 rounded-full border border-slate-200 shadow-sm overflow-hidden">
                     <button
-                      onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
+                      onClick={() =>
+                        updateQuantity(item.cartItemId, item.quantity - 1)
+                      }
                       className="p-2 sm:p-2.5 text-slate-500 hover:text-amber-600 hover:bg-slate-100 transition-colors"
                       aria-label={`Giảm số lượng của ${item.name}`}
                     >
@@ -297,7 +323,9 @@ export default function CartPage() {
                       {item.quantity}
                     </span>
                     <button
-                      onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
+                      onClick={() =>
+                        updateQuantity(item.cartItemId, item.quantity + 1)
+                      }
                       className="p-2 sm:p-2.5 text-slate-500 hover:text-amber-600 hover:bg-slate-100 transition-colors"
                       aria-label={`Tăng số lượng của ${item.name}`}
                     >
@@ -322,7 +350,10 @@ export default function CartPage() {
                 href="/menu"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors group"
               >
-                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft
+                  size={16}
+                  className="group-hover:-translate-x-1 transition-transform"
+                />
                 Tiếp tục chọn món
               </Link>
             </div>
@@ -331,17 +362,18 @@ export default function CartPage() {
           {/* ── Right Column: Order Summary (Sticky) ── */}
           <div className="lg:col-span-4 h-full">
             <div className="bg-white rounded-2xl p-6 sm:p-8 sticky top-[104px] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+              {/* h2 automatically uses font-display from globals.css */}
               <h2 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">
                 Tóm tắt đơn hàng
               </h2>
-              
+
               {/* Error message */}
               {submitError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                   <p className="text-sm text-red-700 font-medium">{submitError}</p>
                 </div>
               )}
-              
+
               {/* Order items count */}
               <div className="flex flex-col gap-4 mb-6">
                 <div className="flex justify-between items-center text-slate-600">
@@ -352,7 +384,10 @@ export default function CartPage() {
 
               {/* Table Selection */}
               <div className="mb-6 pb-6 border-b border-slate-100">
-                <label htmlFor="table-select" className="block text-sm font-semibold text-slate-900 mb-3">
+                <label
+                  htmlFor="table-select"
+                  className="block text-sm font-semibold text-slate-900 mb-3"
+                >
                   Chọn Bàn
                 </label>
                 <select
@@ -376,7 +411,9 @@ export default function CartPage() {
                   aria-label="Chọn bàn ăn"
                 >
                   <option value="">
-                    {isLoadingTables ? "Đang tải danh sách bàn..." : "-- Chọn bàn --"}
+                    {isLoadingTables
+                      ? "Đang tải danh sách bàn..."
+                      : "-- Chọn bàn --"}
                   </option>
 
                   {!isLoadingTables &&
@@ -403,18 +440,27 @@ export default function CartPage() {
               {/* Subtotal */}
               <div className="border-t border-slate-200 border-dashed pt-5 mb-8">
                 <div className="flex justify-between items-end">
-                  <span className="text-slate-900 font-bold text-lg">Tổng cộng</span>
-                  <span className="text-3xl font-display font-black text-amber-600 tracking-tight">
+                  <span className="text-slate-900 font-bold text-lg">
+                    Tổng cộng
+                  </span>
+                  <span className="text-3xl font-black text-amber-600 tracking-tight">
                     {formatPrice(totalPrice)}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 text-right mt-1">Đã bao gồm thuế (nếu có)</p>
+                <p className="text-xs text-slate-400 text-right mt-1">
+                  Đã bao gồm thuế (nếu có)
+                </p>
               </div>
 
               {/* CTA Button */}
               <button
                 onClick={handlePlaceOrder}
-                disabled={isSubmitting || !selectedTable || items.length === 0 || isLoadingTables}
+                disabled={
+                  isSubmitting ||
+                  !selectedTable ||
+                  items.length === 0 ||
+                  isLoadingTables
+                }
                 className={[
                   "flex items-center justify-center w-full py-4 rounded-xl",
                   "font-bold text-lg",
@@ -422,7 +468,10 @@ export default function CartPage() {
                   "transition-all duration-200 transform",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   "cursor-pointer",
-                  isSubmitting || !selectedTable || items.length === 0 || isLoadingTables
+                  isSubmitting ||
+                  !selectedTable ||
+                  items.length === 0 ||
+                  isLoadingTables
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                     : "bg-green-600 text-white hover:bg-green-700 active:scale-95 focus-visible:ring-green-500",
                 ].join(" ")}
@@ -438,7 +487,6 @@ export default function CartPage() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

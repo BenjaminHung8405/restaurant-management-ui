@@ -1,5 +1,6 @@
-/* ── Google Fonts ─────────────────────────────────────────── */
-/* Inter is now loaded from next/font/google in layout.tsx with CSS variable */
+/* ── CRITICAL: Google Fonts injected via next/font/google in app/layout.tsx ── */
+/* --font-sans and --font-display CSS variables are available on <body> */
+/* NO additional font imports here — all fonts come from layout.tsx */
 
 /* ── Tailwind v4 ─────────────────────────────────────────────────────────── */
 @import "tailwindcss";
@@ -7,18 +8,18 @@
 /* ── Base Layer ───────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Brand tokens — consumed by components */
-    --color-primary:   #f97316;
+    /* Brand tokens */
+    --color-primary: #f97316;
     --color-secondary: #f59e0b;
-    --color-surface:   #ffffff;
+    --color-surface: #ffffff;
     --color-surface-muted: #f8fafc;
     --color-text-base: #1e293b;
-    --color-text-muted:#64748b;
-    --color-border:    #e2e8f0;
+    --color-text-muted: #64748b;
+    --color-border: #e2e8f0;
 
     /* Transition defaults */
     --transition-duration: 250ms;
-    --transition-easing:   cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   *,
@@ -36,9 +37,10 @@
     font-variation-settings: "opsz" 32;
   }
 
+  /* ── CRITICAL: Body inherits font-sans from Tailwind + CSS variable ── */
   body {
     background-color: var(--color-surface-muted);
-    color: #1e293b;          /* neutral-800 */
+    color: #1e293b;
     font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
     font-size: 1rem;
     line-height: 1.5rem;
@@ -47,53 +49,69 @@
     min-height: 100dvh;
   }
 
-  /* ── Smooth global transitions on interactive elements ── */
+  /* ── Interactive element transitions ── */
   a,
   button,
   input,
   select,
   textarea,
   [role="button"] {
-    transition-property: color, background-color, border-color,
-                         box-shadow, opacity, transform;
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
     transition-duration: var(--transition-duration);
     transition-timing-function: var(--transition-easing);
   }
 
-  /* ── Focus ring — accessible, on-brand ── */
+  /* ── Focus ring for accessibility ── */
   :focus-visible {
-    outline: 2px solid #f97316;  /* primary-500 */
+    outline: 2px solid #f97316;
     outline-offset: 2px;
-    border-radius: 0.25rem;      /* sm */
+    border-radius: 0.25rem;
   }
 
-  /* ── Typography defaults ── */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: "Playfair Display", Georgia, serif;
+  /* ── CRITICAL: All headings use font-display CSS variable ── */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display, Georgia, serif);
     font-weight: 700;
-    color: #0f172a;             /* neutral-900 */
+    color: #0f172a;
     line-height: 1.2;
   }
 
-  h1 { font-size: 3rem; }      /* 5xl */
-  h2 { font-size: 2.25rem; }   /* 4xl */
-  h3 { font-size: 1.875rem; }  /* 3xl */
-  h4 { font-size: 1.5rem; }    /* 2xl */
-  h5 { font-size: 1.25rem; }   /* xl */
-  h6 { font-size: 1.125rem; }  /* lg */
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2.25rem;
+  }
+  h3 {
+    font-size: 1.875rem;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+  h5 {
+    font-size: 1.25rem;
+  }
+  h6 {
+    font-size: 1.125rem;
+  }
 
   p {
-    color: #334155;             /* neutral-700 */
+    color: #334155;
     line-height: 1.7;
   }
 
   a {
-    color: #ea580c;             /* primary-600 */
+    color: #ea580c;
     text-decoration: none;
   }
 
   a:hover {
-    color: #c2410c;             /* primary-700 */
+    color: #c2410c;
   }
 
   img,
@@ -103,35 +121,34 @@
     display: block;
   }
 
-  /* ── Custom scrollbar (webkit) ── */
+  /* ── Custom scrollbar ── */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f5f9;         /* neutral-100 */
+    background: #f1f5f9;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;         /* neutral-300 */
+    background: #cbd5e1;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;         /* neutral-400 */
+    background: #94a3b8;
   }
 }
 
 /* ── Component Layer ──────────────────────────────────────── */
 @layer components {
-  /* Reusable card surface */
   .card {
     background-color: #ffffff;
-    border-radius: 0.75rem;          /* rounded-xl */
-    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.08); /* shadow-card */
-    border: 1px solid #f1f5f9;       /* neutral-100 */
-    padding: 1.5rem;                 /* p-6 */
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.08);
+    border: 1px solid #f1f5f9;
+    padding: 1.5rem;
   }
 
   .card-hover {
@@ -144,22 +161,22 @@
     transition-duration: 250ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+
   .card-hover:hover {
-    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 0.12); /* shadow-card-hover */
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 0.12);
   }
 
-  /* Primary button */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background-color: #f97316;       /* primary-500 */
+    background-color: #f97316;
     color: #ffffff;
     font-weight: 600;
     font-size: 0.875rem;
-    padding: 0.625rem 1.25rem;       /* px-5 py-2.5 */
-    border-radius: 0.5rem;           /* rounded-lg */
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
     border: none;
     cursor: pointer;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -167,7 +184,7 @@
   }
 
   .btn-primary:hover {
-    background-color: #ea580c;       /* primary-600 */
+    background-color: #ea580c;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     transform: translateY(-1px);
   }
@@ -179,17 +196,25 @@
 
 /* ── Utility Layer ────────────────────────────────────────── */
 @layer utilities {
-  /* Text balance for headings */
-  .text-balance  { text-wrap: balance; }
-  .text-pretty   { text-wrap: pretty; }
+  .text-balance {
+    text-wrap: balance;
+  }
 
-  /* Hide scrollbar but keep scroll */
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .text-pretty {
+    text-wrap: pretty;
+  }
 
-  /* Gradient text */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   .gradient-text {
-    background-image: linear-gradient(to right, #f97316, #f59e0b); /* primary-500 → secondary-500 */
+    background-image: linear-gradient(to right, #f97316, #f59e0b);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
