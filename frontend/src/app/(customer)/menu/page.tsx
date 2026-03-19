@@ -1,16 +1,16 @@
 "use client";
 
-import MenuItemCard from "@/components/customer/MenuItemCard";
 import FloatingCartBar from "@/components/customer/FloatingCartBar";
+import MenuItemCard from "@/components/customer/MenuItemCard";
 import axiosClient from "@/lib/axiosClient";
 import {
   AlertCircle,
-  Search,
-  Star,
   ChefHat,
-  UtensilsCrossed,
   ChevronLeft,
   ChevronRight,
+  Search,
+  Star,
+  UtensilsCrossed,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import "./menu.css";
@@ -505,7 +505,8 @@ export default function MenuPage() {
   );
 
   const filteredFeatured = featuredItems.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (selectedCategory === CATEGORY_ALL || item.category_id === selectedCategory)
   );
 
   return (
@@ -523,11 +524,13 @@ export default function MenuPage() {
         isLoading={isLoading}
       />
 
-      <section className="bg-white py-8 sm:py-12">
-        <Container>
-          <FeaturedCarousel items={filteredFeatured} isLoading={isLoading} />
-        </Container>
-      </section>
+      {filteredFeatured.length > 0 && (
+        <section className="bg-white py-8 sm:py-12">
+          <Container>
+            <FeaturedCarousel items={filteredFeatured} isLoading={isLoading} />
+          </Container>
+        </section>
+      )}
 
       <MenuGrid
         items={filteredItems}

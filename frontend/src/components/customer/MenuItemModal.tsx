@@ -21,12 +21,14 @@ interface MenuItem {
 interface MenuItemModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onItemAdded: () => void;
   item: MenuItem;
 }
 
 export default function MenuItemModal({
   isOpen,
   onClose,
+  onItemAdded,
   item,
 }: MenuItemModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -71,7 +73,7 @@ export default function MenuItemModal({
 
       setQuantity(1);
       setNotes("");
-      handleClose();
+      onItemAdded();
     } catch (error) {
       console.error("Failed to add item to cart:", error);
     } finally {

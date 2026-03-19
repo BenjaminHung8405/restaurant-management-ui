@@ -39,6 +39,10 @@ export default function MenuItemCard({
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleItemAdded = () => {
+    setIsModalOpen(false);
     setHasRecentlyAdded(true);
     setTimeout(() => setHasRecentlyAdded(false), 2000);
   };
@@ -179,7 +183,7 @@ export default function MenuItemCard({
       </div>
 
       {/* Item Customization Modal */}
-      <MenuItemModal isOpen={isModalOpen} onClose={handleCloseModal} item={item} />
+      <MenuItemModal isOpen={isModalOpen} onClose={handleCloseModal} onItemAdded={handleItemAdded} item={item} />
     </>
   );
 }
