@@ -1,16 +1,20 @@
+"use client";
+
 import Button from "@/components/common/Button";
+import ReservationModal from "@/components/customer/ReservationModal";
 import {
-  CTA_BANNER,
-  DISHES_SECTION,
-  FEATURES,
-  FEATURES_SECTION,
-  HERO,
-  type DishPreview,
-  type FeatureItem,
+    CTA_BANNER,
+    DISHES_SECTION,
+    FEATURES,
+    FEATURES_SECTION,
+    HERO,
+    type DishPreview,
+    type FeatureItem,
 } from "@/lib/staticData";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 // ── Sub-components (Server-safe, no hooks) ────────────────────────────────────
 
@@ -131,35 +135,22 @@ function DishCard({ dish }: { dish: DishPreview }) {
 /**
  * CustomerHomePage — Landing page for the customer-facing site.
  *
- * Server Component: no hooks, no "use client".
+ * Client Component: manages modal state with hooks.
  * Sections: Hero → Features → Featured Dishes → CTA Banner
  *
  * customer.md: mobile-first, max-width 1280px, low density, large CTA
  */
-export default async function CustomerHomePage() {
-  let featuredDishes: DishPreview[] = [];
+export default function CustomerHomePage() {
+  const [isReservationOpen, setIsReservationOpen] = useState(false);
+  const [featuredDishes, setFeaturedDishes] = useState<DishPreview[]>([]);
 
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"}/menu-items?isFeatured=true`,
-      { next: { revalidate: 60 } }
-    );
-    const json = await res.json();
+  const handleOpenReservation = (): void => {
+    setIsReservationOpen(true);
+  };
 
-    if (json?.data && Array.isArray(json.data)) {
-      featuredDishes = json.data.slice(0, 3).map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        imageUrl: item.image_url || "/images/placeholder-dish.svg",
-        imageAlt: item.name,
-        badge: "Đặc biệt",
-      }));
-    }
-  } catch (error) {
-    console.error("Failed to fetch featured dishes:", error);
-  }
+  const handleCloseReservation = (): void => {
+    setIsReservationOpen(false);
+  };
 
   return (
     <div className="bg-white">
@@ -248,15 +239,15 @@ export default async function CustomerHomePage() {
                 {HERO.cta.primary}
               </Button>
             </Link>
-            <Link href="#reservation" aria-label="Đặt bàn tại nhà hàng">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto text-lg px-8 py-4 border-2 border-amber-500 text-amber-600 hover:bg-amber-50 rounded-xl transition-all"
-              >
-                {HERO.cta.secondary}
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleOpenReservation}
+              className="w-full sm:w-auto text-lg px-8 py-4 border-2 border-amber-500 text-amber-600 hover:bg-amber-50 rounded-xl transition-all"
+              aria-label="Đặt bàn tại nhà hàng"
+            >
+              {HERO.cta.secondary}
+            </Button>
           </div>
 
           {/* Social proof — customer.md: low density, trust signals */}
@@ -399,21 +390,24 @@ export default async function CustomerHomePage() {
                 {CTA_BANNER.cta.primary}
               </Button>
             </Link>
-            <Link href={CTA_BANNER.cta.phone} aria-label="Gọi điện đặt bàn">
-              <Button
-                variant="ghost"
-                size="lg"
-                style={{ color: "#ffffff", border: "1px solid rgba(255,255,255,0.4)" }}
-              >
-                {CTA_BANNER.cta.secondary}
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={handleOpenReservation}
+              style={{ color: "#ffffff", border: "1px solid rgba(255,255,255,0.4)" }}
+              aria-label="Đặt bàn nhà hàng"
+            >
+              {CTA_BANNER.cta.secondary}
+            </Button>
           </div>
 
           {/* Trust note */}
           <p className="text-sm text-white/70">{CTA_BANNER.trust}</p>
         </div>
       </section>
+
+      {/* ══ RESERVATION MODAL ═════════════════════════════════════════════ */}
+      <ReservationModal isOpen={isReservationOpen} onClose={handleCloseReservation} />
     </div>
   );
 }
