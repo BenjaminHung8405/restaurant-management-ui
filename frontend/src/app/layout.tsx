@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
+    <html lang="vi" data-scroll-behavior="smooth">
       <body className={`${fontSans.variable} ${fontDisplay.variable} font-sans antialiased`}>
         {children}
       </body>

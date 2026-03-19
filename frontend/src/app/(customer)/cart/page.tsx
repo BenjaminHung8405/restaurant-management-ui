@@ -1,5 +1,6 @@
 "use client";
 
+import axiosClient from "@/lib/axiosClient";
 import useCartStore from "@/store/useCartStore";
 import {
   ArrowLeft,
@@ -11,9 +12,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axiosClient from "@/lib/axiosClient";
+import { useEffect, useState } from "react";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -61,22 +61,24 @@ export default function CartPage() {
     setMounted(true);
   }, []);
 
-  // Fetch tables from API
+  // Fetch available tables from API
   useEffect(() => {
     const fetchTables = async () => {
       try {
         setIsLoadingTables(true);
-        const response = await axiosClient.get("/tables");
+        // Use public endpoint /tables/available for customers
+        const response = await axiosClient.get("/tables/available");
 
-        // Handle standard API response format: { success, data }
-        if (response.data?.success && Array.isArray(response.data?.data)) {
-          setTables(response.data.data);
+        // axiosClient already unwraps response.data, so we get the API response object
+        // Response format: { success: true, data: [...], message: "...", error: null }
+        if (response?.data && Array.isArray(response?.data)) {
+          setTables(response?.data);
         } else {
-          console.warn("Unexpected API response format for tables:", response.data);
+          console.warn("Unexpected API response format for tables:", response);
           setTables([]);
         }
-      } catch (error) {
-        console.error("Failed to fetch tables:", error);
+      } catch (error: any) {
+        console.error("Failed to fetch tables:", error?.message || error);
         setTables([]);
       } finally {
         setIsLoadingTables(false);

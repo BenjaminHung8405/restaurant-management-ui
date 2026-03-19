@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
@@ -13,6 +14,9 @@ const nextConfig: NextConfig = {
         hostname: "www.themealdb.com",
       },
     ],
+  },
+  turbopack: {
+    root: path.resolve(__dirname),
   },
 };
 
