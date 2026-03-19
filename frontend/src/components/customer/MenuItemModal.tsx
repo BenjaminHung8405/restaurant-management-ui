@@ -98,14 +98,14 @@ export default function MenuItemModal({
           handleClose();
         }
       }}
-      className="fixed inset-0 z-50 w-full md:w-auto md:rounded-2xl bg-white rounded-t-2xl shadow-2xl md:max-h-[90vh] max-h-[90vh] animate-in slide-in-from-bottom-5 zoom-in-95 duration-300 open:animate-in"
+      className="m-auto p-0 z-50 w-[95vw] sm:w-[90vw] md:w-full max-w-4xl rounded-2xl bg-white shadow-2xl overflow-hidden backdrop:bg-black/60 backdrop:backdrop-blur-sm open:animate-in zoom-in-95 duration-200"
+      style={{ maxHeight: '90vh' }}
     >
-      {/* Mobile: Full width | Desktop: Grid layout */}
-      <div className="flex flex-col md:grid md:grid-cols-2 h-full md:h-auto max-h-[90vh] md:max-h-[85vh] overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full h-full max-h-[90vh] bg-white">
         
-        {/* Left: Image Section (Desktop: fixed, Mobile: scrollable) */}
+        {/* Left: Image Section */}
         {item.image_url && (
-          <div className="relative w-full h-56 md:h-full md:max-h-[600px] bg-slate-100 md:rounded-l-2xl overflow-hidden flex-shrink-0">
+          <div className="relative w-full h-56 md:min-h-[400px] md:h-auto md:w-1/2 bg-slate-100 flex-shrink-0">
             <Image
               src={item.image_url}
               alt={item.name}
@@ -119,7 +119,11 @@ export default function MenuItemModal({
         )}
 
         {/* Right: Content Section */}
-        <div className="flex flex-col h-full md:rounded-r-2xl bg-white overflow-hidden">
+        <div 
+          className={`flex flex-col min-h-0 flex-grow bg-white relative ${
+            item.image_url ? "w-full md:w-1/2" : "w-full"
+          }`}
+        >
           
           {/* Fixed Header */}
           <div className="flex-shrink-0 flex items-start justify-between border-b border-slate-100 px-6 py-4 md:py-5">
