@@ -82,19 +82,29 @@ export default function MenuItemFormModal({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    console.log("[DEBUG] Modal isOpen is false, returning null");
+    return null;
+  }
+
+  console.log("[DEBUG] Modal rendering with isOpen=true");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 py-8">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 py-8" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-800">
+          <h2 id="modal-title" className="text-lg font-semibold text-slate-800">
             {initialData ? "Chỉnh sửa món ăn" : "Thêm món ăn mới"}
           </h2>
           <button
             type="button"
             aria-label="Đóng"
-            onClick={onClose}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("[DEBUG] Close button clicked");
+              onClose();
+            }}
             className="rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
           >
             <X size={20} />
@@ -207,14 +217,24 @@ export default function MenuItemFormModal({
         <div className="mt-6 flex justify-end gap-3">
           <button
             type="button"
-            onClick={onClose}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("[DEBUG] Cancel button clicked");
+              onClose();
+            }}
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
           >
             Hủy
           </button>
           <button
             type="button"
-            onClick={handleSave}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("[DEBUG] Save button clicked, hasError:", hasError, "name:", name.trim());
+              handleSave();
+            }}
             disabled={hasError || name.trim() === ""}
             className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
               hasError || name.trim() === ""

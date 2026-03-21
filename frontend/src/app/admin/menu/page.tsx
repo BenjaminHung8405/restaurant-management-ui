@@ -60,16 +60,21 @@ export default function MenuPage() {
   }, []);
 
   const openAddModal = () => {
+    console.log("[DEBUG] Opening Add Modal");
     setEditingItem(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (item: MenuItem) => {
+    console.log("[DEBUG] Opening Edit Modal for item:", item.id);
     setEditingItem(item);
     setIsModalOpen(true);
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    console.log("[DEBUG] Closing Modal");
+    setIsModalOpen(false);
+  };
 
   const handleSubmit = (formItem: MenuItem) => {
     setItems((previous) => {
@@ -144,8 +149,14 @@ export default function MenuPage() {
           </div>
           <button
             type="button"
-            onClick={openAddModal}
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 whitespace-nowrap"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("[DEBUG] Button clicked - isModalOpen before:", isModalOpen);
+              openAddModal();
+              console.log("[DEBUG] Button clicked - isModalOpen after:", isModalOpen);
+            }}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 whitespace-nowrap active:bg-blue-800"
           >
             <Plus size={18} /> Thêm món ăn
           </button>
