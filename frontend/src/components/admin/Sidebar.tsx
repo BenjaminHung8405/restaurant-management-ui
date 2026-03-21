@@ -1,13 +1,13 @@
 "use client";
 
 import {
-    LayoutDashboard,
-    Settings,
-    ShoppingCart,
-    Table2,
-    Users,
-    UtensilsCrossed,
-    X,
+  LayoutDashboard,
+  Settings,
+  ShoppingCart,
+  Table2,
+  Users,
+  UtensilsCrossed,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,12 +15,12 @@ import { useEffect } from "react";
 
 // ── Nav items ─────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { label: "Bảng điều khiển", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Đơn hàng",        href: "/orders",    icon: ShoppingCart },
-  { label: "Thực đơn",        href: "/menu",      icon: UtensilsCrossed },
-  { label: "Bàn ăn",          href: "/tables",    icon: Table2 },
-  { label: "Người dùng",      href: "/users",     icon: Users },
-  { label: "Cài đặt",         href: "/settings",  icon: Settings },
+  { label: "Bảng điều khiển", href: "/admin/dashboard", icon: LayoutDashboard },
+  { label: "Đơn hàng",        href: "/admin/orders",    icon: ShoppingCart },
+  { label: "Thực đơn",        href: "/admin/menu",      icon: UtensilsCrossed },
+  { label: "Bàn ăn",          href: "/admin/tables",    icon: Table2 },
+  { label: "Người dùng",      href: "/admin/users",     icon: Users },
+  { label: "Cài đặt",         href: "/admin/settings",  icon: Settings },
 ];
 
 // ── Logo ──────────────────────────────────────────────────────────────────────

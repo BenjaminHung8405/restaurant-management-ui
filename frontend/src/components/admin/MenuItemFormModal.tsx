@@ -8,8 +8,9 @@ interface MenuItemFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialData: MenuItem | null;
-  onSubmit: (item: MenuItem) => void;
+  onSubmit: (item: MenuItem) => Promise<void>;
   categories?: Category[];
+  isSubmitting?: boolean;
 }
 
 export default function MenuItemFormModal({ 
@@ -17,7 +18,8 @@ export default function MenuItemFormModal({
   onClose, 
   initialData, 
   onSubmit,
-  categories = []
+  categories = [],
+  isSubmitting = false
 }: MenuItemFormModalProps) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -235,14 +237,14 @@ export default function MenuItemFormModal({
               console.log("[DEBUG] Save button clicked, hasError:", hasError, "name:", name.trim());
               handleSave();
             }}
-            disabled={hasError || name.trim() === ""}
+            disabled={hasError || name.trim() === "" || isSubmitting}
             className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
-              hasError || name.trim() === ""
+              hasError || name.trim() === "" || isSubmitting
                 ? "cursor-not-allowed bg-slate-300"
                 : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {initialData ? "Cập nhật" : "Tạo mới"}
+            {isSubmitting ? "Đang lưu..." : (initialData ? "Cập nhật" : "Tạo mới")}
           </button>
         </div>
       </div>
