@@ -87,38 +87,52 @@ export default function CartPage() {
         notes: item.notes || undefined,
       }));
 
+      console.log("Submitting order with payload:", {
+        table_id: tableId,
+        items: orderItems,
+      });
+
       // Submit order to backend
       const response = await axiosClient.post("/orders", {
         table_id: tableId,
         items: orderItems,
       });
 
-      if (response.data?.success) {
-        setSubmitSuccess(true);
+      console.log("Order submission response:", response.data);
 
+      // If Axios resolves without throwing, the request succeeded (2xx status code)
+      // Trust the resolution, not strict response.data structure checks
+      try {
         // Clear cart after successful order
         clearCart();
-
-        // Show success feedback and redirect
-        setTimeout(() => {
-          router.push("/menu");
-        }, 1500);
-      } else {
-        setSubmitError(
-          response.data?.message || "Không thể gửi đơn hàng, vui lòng thử lại"
-        );
+        console.log("Cart cleared successfully");
+      } catch (clearError) {
+        console.error("Error clearing cart (non-blocking):", clearError);
+        // Don't fail the order submission if cart clear errors
       }
+
+      setSubmitSuccess(true);
+
+      // Show success feedback and redirect
+      setTimeout(() => {
+        router.push("/menu");
+      }, 1500);
     } catch (error: unknown) {
+      console.log("Submit Error Details:", error);
       console.error("Order submission error:", error);
 
       if (typeof error === "object" && error !== null && "response" in error) {
         const axiosError = error as {
-          response?: { data?: { message?: string } };
+          response?: { data?: { message?: string; error?: unknown } };
+          message?: string;
         };
+        // Log full error response for debugging
+        console.error("Full Error Response:", axiosError.response?.data || axiosError.message);
         const errorMsg =
           axiosError.response?.data?.message || "Lỗi khi gửi đơn hàng";
         setSubmitError(errorMsg);
       } else {
+        console.error("Network or unknown error:", error);
         setSubmitError("Lỗi kết nối, vui lòng kiểm tra kết nối mạng");
       }
     } finally {
