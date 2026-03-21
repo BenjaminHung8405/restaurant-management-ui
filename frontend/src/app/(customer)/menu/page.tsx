@@ -3,15 +3,17 @@
 import FloatingCartBar from "@/components/customer/FloatingCartBar";
 import MenuItemCard from "@/components/customer/MenuItemCard";
 import axiosClient from "@/lib/axiosClient";
+import useCartStore from "@/store/useCartStore";
 import {
-  AlertCircle,
-  ChefHat,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Star,
-  UtensilsCrossed,
+    AlertCircle,
+    ChefHat,
+    ChevronLeft,
+    ChevronRight,
+    Search,
+    Star,
+    UtensilsCrossed,
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import "./menu.css";
 
@@ -437,12 +439,23 @@ function CTASection() {
 // ── Main Page Component ────────────────────────────────────────────────────────
 
 export default function MenuPage() {
+  const searchParams = useSearchParams();
+  const setTableId = useCartStore((s) => s.setTableId);
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [featuredItems, setFeaturedItems] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORY_ALL);
+
+  // Capture table_id from URL parameter and persist to store
+  useEffect(() => {
+    const tableIdFromUrl = searchParams.get("table_id");
+    if (tableIdFromUrl) {
+      setTableId(tableIdFromUrl);
+    }
+  }, [searchParams, setTableId]);
 
   useEffect(() => {
     const fetchCategories = async () => {

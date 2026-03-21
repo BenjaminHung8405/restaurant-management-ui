@@ -17,13 +17,6 @@ import { useEffect, useState } from "react";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-interface Table {
-  id: string;
-  table_number: string;
-  capacity: number;
-  status: string;
-}
-
 interface OrderItem {
   menu_item_id: string;
   quantity: number;
@@ -35,6 +28,7 @@ interface OrderItem {
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
+  const tableId = useCartStore((s) => s.tableId);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const clearCart = useCartStore((s) => s.clearCart);
@@ -42,9 +36,6 @@ export default function CartPage() {
 
   // Local state
   const [mounted, setMounted] = useState(false);
-  const [tables, setTables] = useState<Table[]>([]);
-  const [isLoadingTables, setIsLoadingTables] = useState(true);
-  const [selectedTable, setSelectedTable] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -61,33 +52,6 @@ export default function CartPage() {
     setMounted(true);
   }, []);
 
-  // Fetch available tables from API
-  useEffect(() => {
-    const fetchTables = async () => {
-      try {
-        setIsLoadingTables(true);
-        // Use public endpoint /tables/available for customers
-        const response = await axiosClient.get("/tables/available");
-
-        // axiosClient already unwraps response.data, so we get the API response object
-        // Response format: { success: true, data: [...], message: "...", error: null }
-        if (response?.data && Array.isArray(response?.data)) {
-          setTables(response?.data);
-        } else {
-          console.warn("Unexpected API response format for tables:", response);
-          setTables([]);
-        }
-      } catch (error: any) {
-        console.error("Failed to fetch tables:", error?.message || error);
-        setTables([]);
-      } finally {
-        setIsLoadingTables(false);
-      }
-    };
-
-    fetchTables();
-  }, []);
-
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -100,9 +64,9 @@ export default function CartPage() {
   };
 
   const handlePlaceOrder = async () => {
-    // Validate selections
-    if (!selectedTable) {
-      setSubmitError("Vui lòng chọn bàn ăn");
+    // Validate table ID
+    if (!tableId) {
+      setSubmitError("Vui lòng quét mã QR tại bàn để hệ thống nhận diện vị trí");
       return;
     }
 
@@ -125,7 +89,7 @@ export default function CartPage() {
 
       // Submit order to backend
       const response = await axiosClient.post("/orders", {
-        table_id: selectedTable,
+        table_id: tableId,
         items: orderItems,
       });
 
@@ -369,6 +333,53 @@ export default function CartPage() {
                 Tóm tắt đơn hàng
               </h2>
 
+              {/* QR Code Table Validation Banner */}
+              {!tableId && (
+                <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex gap-3">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <svg
+                      className="w-5 h-5 text-red-600"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-800">
+                      Vui lòng quét mã QR tại bàn
+                    </p>
+                    <p className="text-xs text-red-700 mt-1">
+                      Hệ thống cần bàn của bạn để xác nhận đơn hàng
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Table Confirmation Badge (Optional) */}
+              {tableId && (
+                <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4 text-green-600 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <p className="text-xs text-green-700 font-medium">
+                    Bàn của bạn đã được xác nhận
+                  </p>
+                </div>
+              )}
+
               {/* Error message */}
               {submitError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -382,61 +393,6 @@ export default function CartPage() {
                   <span className="font-medium">Tổng số món</span>
                   <span className="font-bold text-slate-900">{totalItems} món</span>
                 </div>
-              </div>
-
-              {/* Table Selection */}
-              <div className="mb-6 pb-6 border-b border-slate-100">
-                <label
-                  htmlFor="table-select"
-                  className="block text-sm font-semibold text-slate-900 mb-3"
-                >
-                  Chọn Bàn
-                </label>
-                <select
-                  id="table-select"
-                  value={selectedTable}
-                  onChange={(e) => {
-                    setSelectedTable(e.target.value);
-                    setSubmitError(null);
-                  }}
-                  disabled={isLoadingTables}
-                  className={[
-                    "w-full px-4 py-3 rounded-xl",
-                    "border-2 transition-colors duration-200",
-                    "text-slate-900 font-medium",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                    isLoadingTables && "opacity-50 cursor-not-allowed",
-                    selectedTable
-                      ? "border-green-500 focus-visible:ring-green-500"
-                      : "border-slate-200 focus-visible:ring-amber-500",
-                  ].join(" ")}
-                  aria-label="Chọn bàn ăn"
-                >
-                  <option value="">
-                    {isLoadingTables
-                      ? "Đang tải danh sách bàn..."
-                      : "-- Chọn bàn --"}
-                  </option>
-
-                  {!isLoadingTables &&
-                    tables.map((table) => {
-                      const isAvailable = table.status === "available";
-                      const optionText = `${table.table_number} (Sức chứa: ${table.capacity} người)${
-                        !isAvailable ? " - Đã có khách" : ""
-                      }`;
-
-                      return (
-                        <option
-                          key={table.id}
-                          value={table.id}
-                          disabled={!isAvailable}
-                          className={!isAvailable ? "opacity-50" : ""}
-                        >
-                          {optionText}
-                        </option>
-                      );
-                    })}
-                </select>
               </div>
 
               {/* Subtotal */}
@@ -457,12 +413,7 @@ export default function CartPage() {
               {/* CTA Button */}
               <button
                 onClick={handlePlaceOrder}
-                disabled={
-                  isSubmitting ||
-                  !selectedTable ||
-                  items.length === 0 ||
-                  isLoadingTables
-                }
+                disabled={isSubmitting || !tableId || items.length === 0}
                 className={[
                   "flex items-center justify-center w-full py-4 rounded-xl",
                   "font-bold text-lg",
@@ -470,22 +421,19 @@ export default function CartPage() {
                   "transition-all duration-200 transform",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
                   "cursor-pointer",
-                  isSubmitting ||
-                  !selectedTable ||
-                  items.length === 0 ||
-                  isLoadingTables
+                  isSubmitting || !tableId || items.length === 0
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                     : "bg-green-600 text-white hover:bg-green-700 active:scale-95 focus-visible:ring-green-500",
                 ].join(" ")}
                 aria-label="Gửi đơn hàng xuống bếp"
               >
-                {isSubmitting ? "Đang gửi..." : "Xác nhận gọi món"}
+                {isSubmitting ? "Đang gửi..." : "Gửi Bếp"}
               </button>
 
               {/* Info note */}
               <div className="mt-6 flex flex-col gap-2 items-center text-center text-xs text-slate-400">
-                <p>Chọn bàn để xác nhận đơn hàng</p>
                 <p>Bếp sẽ nhận và chuẩn bị món ăn của bạn</p>
+                <p>Vui lòng chờ phục vụ viên mang món ăn đến bàn</p>
               </div>
             </div>
           </div>

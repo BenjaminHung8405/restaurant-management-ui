@@ -24,8 +24,15 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   updatedAt: number; // Timestamp (milliseconds) when cart was last modified
+  tableId: string | null; // QR code table ID from URL parameter (e.g., "1111-2222-3333")
 
   // ── Actions ────────────────────────────────────────────
+
+  /**
+   * Set the table ID from QR code scan (URL parameter).
+   * Persisted to localStorage for session continuity.
+   */
+  setTableId: (id: string) => void;
 
   /**
    * Add an item to the cart.
@@ -95,8 +102,13 @@ const useCartStore = create<CartState>()(
       // ── Initial state ──────────────────────────────────────────────────────
       items: [],
       updatedAt: Date.now(),
+      tableId: null,
 
       // ── Actions ────────────────────────────────────────────────────────────
+
+      setTableId: (id) => {
+        set({ tableId: id });
+      },
 
       addItem: (item) => {
         const { items } = get();
@@ -177,6 +189,7 @@ const useCartStore = create<CartState>()(
       partialize: (state) => ({
         items: state.items,
         updatedAt: state.updatedAt, // Persist timestamp for expiry check
+        tableId: state.tableId, // Persist table ID for QR code dine-in flow
       }),
     }
   )
