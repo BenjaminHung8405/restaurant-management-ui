@@ -288,7 +288,7 @@ export default function MenuPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full text-left text-sm">
-                <thead className="border-b border-slate-200 bg-gray-50">
+                <thead className="border-b border-slate-200 bg-primary-500">
                   <tr>
                     <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-gray-500">Hình ảnh</th>
                     <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-gray-500">Tên món</th>
