@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  LayoutDashboard,
-  Settings,
-  ShoppingCart,
-  Table2,
-  UtensilsCrossed,
-  Users,
-  X,
+    LayoutDashboard,
+    Settings,
+    ShoppingCart,
+    Table2,
+    Users,
+    UtensilsCrossed,
+    X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

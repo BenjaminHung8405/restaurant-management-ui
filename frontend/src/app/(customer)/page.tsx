@@ -2,19 +2,21 @@
 
 import Button from "@/components/common/Button";
 import ReservationModal from "@/components/customer/ReservationModal";
+import axiosClient from "@/lib/axiosClient";
 import {
-    CTA_BANNER,
-    DISHES_SECTION,
-    FEATURES,
-    FEATURES_SECTION,
-    HERO,
-    type DishPreview,
-    type FeatureItem,
+  CTA_BANNER,
+  DISHES,
+  DISHES_SECTION,
+  FEATURES,
+  FEATURES_SECTION,
+  HERO,
+  type DishPreview,
+  type FeatureItem,
 } from "@/lib/staticData";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // ── Sub-components (Server-safe, no hooks) ────────────────────────────────────
 
@@ -52,6 +54,7 @@ function FeatureCard({ item }: { item: FeatureItem }) {
 
 function DishCard({ dish }: { dish: DishPreview }) {
   const { name, description, price, imageUrl, imageAlt, badge } = dish;
+  const priceNum = typeof price === "string" ? parseInt(price, 10) : price;
 
   return (
     <article
@@ -108,7 +111,7 @@ function DishCard({ dish }: { dish: DishPreview }) {
         {/* Price + CTA row */}
         <div className="flex items-center justify-between pt-4 mt-auto border-t border-neutral-100">
           <span className="text-lg font-bold text-amber-600">
-            {price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            {priceNum.toLocaleString("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 })}
           </span>
           <Link href="/menu" aria-label={`Xem chi tiết ${name}`}>
             <button
@@ -135,14 +138,47 @@ function DishCard({ dish }: { dish: DishPreview }) {
 /**
  * CustomerHomePage — Landing page for the customer-facing site.
  *
- * Client Component: manages modal state with hooks.
+ * Client Component: manages modal state and fetches featured dishes from API.
  * Sections: Hero → Features → Featured Dishes → CTA Banner
  *
  * customer.md: mobile-first, max-width 1280px, low density, large CTA
  */
 export default function CustomerHomePage() {
   const [isReservationOpen, setIsReservationOpen] = useState(false);
-  const [featuredDishes, setFeaturedDishes] = useState<DishPreview[]>([]);
+  const [featuredDishes, setFeaturedDishes] = useState<DishPreview[]>(DISHES);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch featured menu items from API
+  useEffect(() => {
+    const fetchFeaturedDishes = async () => {
+      try {
+        setIsLoading(true);
+        // Fetch only featured menu items
+        const response = await axiosClient.get("/menu-items?isFeatured=true");
+        
+        if (response?.data && Array.isArray(response.data)) {
+          // Transform API response to match DishPreview interface
+          const transformedDishes: DishPreview[] = response.data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            description: item.description || "",
+            price: String(item.price || 0),
+            imageUrl: item.image_url || "https://images.unsplash.com/photo-1495503053985-611b8accacda?w=500&h=400&fit=crop",
+            imageAlt: item.name,
+          }));
+          setFeaturedDishes(transformedDishes);
+        }
+      } catch (error: any) {
+        console.error("Failed to fetch menu items:", error);
+        // Fallback to mock data
+        setFeaturedDishes(DISHES);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeaturedDishes();
+  }, []);
 
   const handleOpenReservation = (): void => {
     setIsReservationOpen(true);
