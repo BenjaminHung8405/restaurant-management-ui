@@ -26,18 +26,18 @@ const NAV_ITEMS = [
 // ── Logo ──────────────────────────────────────────────────────────────────────
 function SidebarLogo() {
   return (
-    <div className="flex items-center gap-3 px-5 h-16 border-b border-slate-200 flex-shrink-0">
+    <div className="flex items-center gap-2.5 px-4 py-3 h-fit border-b border-slate-200 flex-shrink-0">
       <div
-        className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-500"
+        className="flex items-center justify-center p-2 rounded-lg bg-amber-500 shadow-sm flex-shrink-0"
         aria-hidden="true"
       >
-        <UtensilsCrossed size={16} strokeWidth={2.5} className="text-white" />
+        <UtensilsCrossed size={18} strokeWidth={2.5} className="text-white" />
       </div>
-      <div className="min-w-0">
-        <p className="text-sm font-bold text-slate-800 leading-tight truncate">
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-bold text-slate-900 leading-tight truncate">
           RestoMS
         </p>
-        <p className="text-[11px] text-slate-400 leading-tight truncate">
+        <p className="text-[11px] text-slate-500 leading-tight truncate font-medium">
           Quản trị hệ thống
         </p>
       </div>
@@ -119,7 +119,9 @@ export default function Sidebar({ isOpen, onClose }) {
       aria-label="Điều hướng quản trị"
     >
       {/* ── Logo ── */}
-      <SidebarLogo />
+      <div className="flex-shrink-0">
+        <SidebarLogo />
+      </div>
 
       {/* ── Navigation ── */}
       <nav className="flex-1 overflow-y-auto py-4 no-scrollbar">

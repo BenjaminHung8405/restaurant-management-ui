@@ -186,28 +186,39 @@ export default function MenuPage() {
 
   const tableRows = useMemo(() => {
     return items.map((item) => (
-      <tr key={item.id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-        <td className="px-3 py-3.5">
+      <tr key={item.id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors duration-150">
+        <td className="px-6 py-4 align-middle">
           <img
             src={item.image_url}
             alt={item.name}
-            className="h-12 w-12 rounded-md object-cover border border-slate-200"
+            className="h-14 w-14 rounded-lg object-cover border border-slate-200 shadow-sm"
           />
         </td>
-        <td className="px-3 py-3.5 text-sm text-slate-800">{item.name}</td>
-        <td className="px-3 py-3.5 text-sm text-slate-600">{item.category}</td>
-        <td className="px-3 py-3.5 text-sm font-medium text-slate-800">{formatVND(item.price)}</td>
-        <td className="px-3 py-3.5">
-          <span className={`rounded-full px-2 py-1 text-xs font-semibold ${statusBadge(item.status)}`}>
+        <td className="px-6 py-4 align-middle">
+          <div className="max-w-xs">
+            <p
+              className="text-sm font-medium text-slate-900 line-clamp-2 break-words"
+              title={item.name}
+            >
+              {item.name}
+            </p>
+          </div>
+        </td>
+        <td className="px-6 py-4 align-middle text-sm text-slate-600">{item.category}</td>
+        <td className="px-6 py-4 align-middle text-right">
+          <span className="text-sm font-semibold text-slate-900">{formatVND(item.price)}</span>
+        </td>
+        <td className="px-6 py-4 align-middle">
+          <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusBadge(item.status)}`}>
             {item.status === "active" ? "Đang bán" : "Hết hàng"}
           </span>
         </td>
-        <td className="px-3 py-3.5">
-          <div className="flex items-center gap-2">
+        <td className="px-6 py-4 align-middle">
+          <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => openEditModal(item)}
-              className="rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+              className="rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-700 hover:border-slate-400 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
               aria-label={`Chỉnh sửa ${item.name}`}
             >
               <Edit3 size={16} />
@@ -215,7 +226,7 @@ export default function MenuPage() {
             <button
               type="button"
               onClick={() => handleDelete(item.id)}
-              className="rounded-lg border border-rose-300 p-2 text-rose-600 hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200"
+              className="rounded-lg border border-rose-300 p-2 text-rose-600 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-400 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
               aria-label={`Xóa ${item.name}`}
             >
               <Trash2 size={16} />
@@ -277,14 +288,14 @@ export default function MenuPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full text-left text-sm">
-                <thead className="border-b border-slate-200 bg-slate-50">
+                <thead className="border-b border-slate-200 bg-gray-50">
                   <tr>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Hình ảnh</th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Tên món</th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Danh mục</th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Giá bán</th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Trạng thái</th>
-                    <th className="px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Hành động</th>
+                    <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-gray-500">Hình ảnh</th>
+                    <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-gray-500">Tên món</th>
+                    <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-gray-500">Danh mục</th>
+                    <th className="px-6 py-4 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Giá bán</th>
+                    <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-gray-500">Trạng thái</th>
+                    <th className="px-6 py-4 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Hành động</th>
                   </tr>
                 </thead>
                 <tbody>{tableRows}</tbody>
