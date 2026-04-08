@@ -14,16 +14,6 @@ export interface FeatureItem {
   description: string;
 }
 
-export interface DishPreview {
-  id: string | number;
-  name: string;
-  description: string;
-  price: string;
-  imageUrl: string;
-  imageAlt: string;
-  badge?: string;
-}
-
 // ── Features Section ──────────────────────────────────────────────────────────
 
 export const FEATURES: FeatureItem[] = [
@@ -91,40 +81,7 @@ export const DISHES_SECTION = {
   cta: "Xem Toàn Bộ Thực Đơn",
 } as const;
 
-// ── Featured Dishes (Fallback Mock Data) ──────────────────────────────────────
 
-export const DISHES: DishPreview[] = [
-  {
-    id: "1",
-    name: "Phở bò tái",
-    description:
-      "Phở bò truyền thống nước dùng đậm đà, thơm lừng, ăn kèm giá và rau thơm.",
-    price: "75000",
-    imageUrl:
-      "https://images.unsplash.com/photo-1525521999609-27722d3e63e8?w=500&h=400&fit=crop",
-    imageAlt: "Phở bò tái",
-  },
-  {
-    id: "2",
-    name: "Gỏi cuốn tôm",
-    description:
-      "Gỏi cuốn tôm tươi với khoai sọ, rau thơm, bánh tráng cuốn vàng ăn kèm nước mắm chua ngọt.",
-    price: "42000",
-    imageUrl:
-      "https://images.unsplash.com/photo-1609501676725-7186f017a4b1?w=500&h=400&fit=crop",
-    imageAlt: "Gỏi cuốn tôm",
-  },
-  {
-    id: "3",
-    name: "Chè ba màu",
-    description:
-      "Chè ba màu đặc biệt với đậu đỏ, đậu xanh, sắn dây cơm, nước cốt dừa thơm ngon.",
-    price: "35000",
-    imageUrl:
-      "https://images.unsplash.com/photo-1563805042-7684c019e157?w=500&h=400&fit=crop",
-    imageAlt: "Chè ba màu",
-  },
-];
 
 // ── CTA Banner Section ────────────────────────────────────────────────────────
 

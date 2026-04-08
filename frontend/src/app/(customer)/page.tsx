@@ -5,18 +5,28 @@ import ReservationModal from "@/components/customer/ReservationModal";
 import axiosClient from "@/lib/axiosClient";
 import {
   CTA_BANNER,
-  DISHES,
   DISHES_SECTION,
   FEATURES,
   FEATURES_SECTION,
   HERO,
-  type DishPreview,
   type FeatureItem,
 } from "@/lib/staticData";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface DishPreview {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  imageUrl: string;
+  imageAlt: string;
+  badge?: string;
+}
 
 // ── Sub-components (Server-safe, no hooks) ────────────────────────────────────
 
@@ -145,7 +155,7 @@ function DishCard({ dish }: { dish: DishPreview }) {
  */
 export default function CustomerHomePage() {
   const [isReservationOpen, setIsReservationOpen] = useState(false);
-  const [featuredDishes, setFeaturedDishes] = useState<DishPreview[]>(DISHES);
+  const [featuredDishes, setFeaturedDishes] = useState<DishPreview[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Fetch featured menu items from API
@@ -170,8 +180,8 @@ export default function CustomerHomePage() {
         }
       } catch (error: any) {
         console.error("Failed to fetch menu items:", error);
-        // Fallback to mock data
-        setFeaturedDishes(DISHES);
+        // Fallback to empty state
+        setFeaturedDishes([]);
       } finally {
         setIsLoading(false);
       }
