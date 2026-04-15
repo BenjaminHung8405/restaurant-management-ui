@@ -4,12 +4,12 @@ import Button from "@/components/common/Button";
 import ReservationModal from "@/components/customer/ReservationModal";
 import axiosClient from "@/lib/axiosClient";
 import {
-  CTA_BANNER,
-  DISHES_SECTION,
-  FEATURES,
-  FEATURES_SECTION,
-  HERO,
-  type FeatureItem,
+    CTA_BANNER,
+    DISHES_SECTION,
+    FEATURES,
+    FEATURES_SECTION,
+    HERO,
+    type FeatureItem,
 } from "@/lib/staticData";
 import { Star } from "lucide-react";
 import Image from "next/image";

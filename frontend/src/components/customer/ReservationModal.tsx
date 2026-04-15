@@ -15,6 +15,12 @@ interface ReservationModalProps {
 const OPENING_HOUR = 10;
 const CLOSING_HOUR = 22;
 const TIME_STEP_MINUTES = 30;
+const DATE_DISPLAY_FORMATTER = new Intl.DateTimeFormat("vi-VN", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 const getTodayDate = (): string => {
   const today = new Date();
@@ -35,6 +41,50 @@ const toMinutes = (time: string): number => {
 
 const roundUpToStep = (value: number, step: number): number => {
   return Math.ceil(value / step) * step;
+};
+
+const isValidISODate = (value: string): boolean => {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+};
+
+const formatISODateToDisplay = (value: string): string => {
+  if (!isValidISODate(value)) {
+    return "";
+  }
+
+  const [yearText, monthText, dayText] = value.split("-");
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return DATE_DISPLAY_FORMATTER.format(date);
+};
+
+const parseDisplayDateToISO = (value: string): string | null => {
+  const normalizedValue = value.trim();
+  const match = normalizedValue.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, dayText, monthText, yearText] = match;
+  const day = Number(dayText);
+  const month = Number(monthText);
+  const year = Number(yearText);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  const isRealDate =
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() + 1 === month &&
+    date.getUTCDate() === day;
+
+  if (!isRealDate) {
+    return null;
+  }
+
+  return `${yearText}-${monthText}-${dayText}`;
 };
 
 const generateTimeSlots = (startMinutes: number, endMinutes: number): string[] => {
@@ -111,6 +161,9 @@ export default function ReservationModal({
 
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string>("");
+  const [reservationDateDisplay, setReservationDateDisplay] = useState<string>(
+    formatISODateToDisplay(today),
+  );
 
   const {
     register,
@@ -144,8 +197,6 @@ export default function ReservationModal({
     return toTimeString(Math.max(openMinutes, roundedNow));
   }, [isTodaySelected, openMinutes]);
 
-  const maxTime = toTimeString(closeMinutes);
-
   const quickTimeSlots = useMemo(() => {
     const start = isTodaySelected ? Math.max(openMinutes, toMinutes(minTime)) : openMinutes;
     if (start > closeMinutes) {
@@ -162,6 +213,7 @@ export default function ReservationModal({
     reset(defaultFormValues(today));
     setIsSuccess(false);
     setSubmitError("");
+    setReservationDateDisplay(formatISODateToDisplay(today));
 
     const timeoutId = window.setTimeout(() => {
       setFocus("guest_name");
@@ -169,6 +221,33 @@ export default function ReservationModal({
 
     return () => window.clearTimeout(timeoutId);
   }, [isOpen, reset, setFocus, today]);
+
+  useEffect(() => {
+    if (!isOpen || !selectedDate) {
+      return;
+    }
+
+    setReservationDateDisplay(formatISODateToDisplay(selectedDate));
+  }, [isOpen, selectedDate]);
+
+  useEffect(() => {
+    if (quickTimeSlots.length === 0) {
+      setValue("reservation_time", "", {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      return;
+    }
+
+    if (selectedTime && !quickTimeSlots.includes(selectedTime)) {
+      setValue("reservation_time", "", {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    }
+  }, [quickTimeSlots, selectedTime, setValue]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -197,6 +276,26 @@ export default function ReservationModal({
       return;
     }
     onClose();
+  };
+
+  const handleReservationDateBlur = (): void => {
+    const parsedDate = parseDisplayDateToISO(reservationDateDisplay);
+
+    if (parsedDate) {
+      setValue("reservation_date", parsedDate, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      setReservationDateDisplay(formatISODateToDisplay(parsedDate));
+      return;
+    }
+
+    setValue("reservation_date", "", {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
   };
 
   const onSubmit = async (values: ReservationFormValues): Promise<void> => {
@@ -338,23 +437,31 @@ export default function ReservationModal({
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="reservation_date" className="mb-1 block text-sm font-medium text-neutral-700">
+                  <label htmlFor="reservation_date_display" className="mb-1 block text-sm font-medium text-neutral-700">
                     Ngày đặt bàn
                   </label>
                   <input
-                    id="reservation_date"
-                    type="date"
-                    min={today}
+                    id="reservation_date_display"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="dd/MM/yyyy"
+                    value={reservationDateDisplay}
+                    onChange={(event) => setReservationDateDisplay(event.target.value)}
+                    onBlur={handleReservationDateBlur}
                     aria-invalid={Boolean(errors.reservation_date)}
-                    aria-describedby={errors.reservation_date ? "reservation_date_error" : undefined}
-                    {...register("reservation_date")}
+                    aria-describedby={errors.reservation_date ? "reservation_date_error" : "reservation_date_hint"}
                     className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
                   />
+                  <input type="hidden" {...register("reservation_date")} />
                   {errors.reservation_date ? (
                     <p id="reservation_date_error" className="mt-1 text-xs text-red-600">
                       {errors.reservation_date.message}
                     </p>
-                  ) : null}
+                  ) : (
+                    <p id="reservation_date_hint" className="mt-1 text-xs text-neutral-500">
+                      Nhập theo định dạng dd/MM/yyyy (ví dụ: 09/04/2026).
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -362,54 +469,31 @@ export default function ReservationModal({
                     Giờ đặt bàn
                   </label>
 
-                  <div className="mb-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                    {quickTimeSlots.map((slot) => (
-                      <button
-                        key={slot}
-                        type="button"
-                        onClick={() => {
-                          setValue("reservation_time", slot, {
-                            shouldValidate: true,
-                            shouldDirty: true,
-                            shouldTouch: true,
-                          });
-                        }}
-                        aria-pressed={selectedTime === slot}
-                        className={[
-                          "rounded-md border px-2 py-1.5 text-xs font-medium transition-colors duration-200",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500",
-                          selectedTime === slot
-                            ? "border-amber-500 bg-amber-50 text-amber-700"
-                            : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50",
-                          "cursor-pointer",
-                        ].join(" ")}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
-
                   {quickTimeSlots.length === 0 ? (
                     <p className="mb-2 text-xs text-amber-700">
                       Hôm nay đã hết khung giờ khả dụng. Vui lòng chọn ngày khác.
                     </p>
                   ) : (
                     <p className="mb-2 text-xs text-neutral-500">
-                      Chọn nhanh khung giờ hoặc nhập tay bên dưới.
+                      Chọn khung giờ theo bước 30 phút.
                     </p>
                   )}
 
-                  <input
+                  <select
                     id="reservation_time"
-                    type="time"
-                    step={TIME_STEP_MINUTES * 60}
-                    min={minTime}
-                    max={maxTime}
+                    disabled={quickTimeSlots.length === 0}
                     aria-invalid={Boolean(errors.reservation_time)}
                     aria-describedby={errors.reservation_time ? "reservation_time_error" : undefined}
                     {...register("reservation_time")}
-                    className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-                  />
+                    className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 disabled:cursor-not-allowed disabled:bg-neutral-100"
+                  >
+                    <option value="">Chọn giờ đặt bàn</option>
+                    {quickTimeSlots.map((slot) => (
+                      <option key={slot} value={slot}>
+                        {slot}
+                      </option>
+                    ))}
+                  </select>
                   {errors.reservation_time ? (
                     <p id="reservation_time_error" className="mt-1 text-xs text-red-600">
                       {errors.reservation_time.message}
